@@ -1,0 +1,20 @@
+{
+  "name": "client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@aws-sdk/client-polly": "^3.395.0",
+    "eris": "^0.17.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.1",
+    "@typescript-eslint/parser": "^6.4.0",
+    "eslint-plugin-perfectionist": "^1.5.1",
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.6"
+  }
+}
