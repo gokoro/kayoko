@@ -20,8 +20,8 @@ wget https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/hubert_base
 # Setup python
 apt install python3-pip -y
 
-./venv.sh
-source .venv/bin/activate
+# ./venv.sh
+# source .venv/bin/activate
 
 pip install torch torchvision torchaudio
 pip install -r requirements.txt
