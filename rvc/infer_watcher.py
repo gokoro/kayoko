@@ -208,7 +208,7 @@ def vc_single(
 
     observer = Observer()
     handler = Handler()
-    observer.schedule(handler, "../client/output")
+    observer.schedule(handler, "./voice-output")
     observer.start()
 
     while True:
