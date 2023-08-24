@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  kayoko-client:
+    image: ghcr.io/gokoro/kayoko-client:latest
+    volumes:
+      - output:/app/output
+    env_file: 
+      - client.env
+
+  kayoko-rvc:
+    image: ghcr.io/gokoro/kayoko-rvc:latest
+    volumes:
+      - output:/app/rvc/voice-output
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+
+
+volumes:
+  output:

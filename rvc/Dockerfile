@@ -9,7 +9,7 @@ FROM base AS builder
 
 RUN apt-get install git unzip -y \
   && git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git rvc --depth=1 \
-  && cat requirements.txt > rvc/requirements.txt
+  && cat requirements.txt >> rvc/requirements.txt
 
 WORKDIR /app/rvc
 
