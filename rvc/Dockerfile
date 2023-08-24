@@ -29,6 +29,7 @@ WORKDIR /app/rvc
 
 RUN apt-get install ffmpeg -y -qq \
   && sed -i 's/pyworld==0.3.2/pyworld==0.3.4/g' requirements.txt  \
+  && sed -i 's/pyworld = "^0.3.2"/pyworld = "^0.3.4"/g' pyproject.toml  \
   && pip install -r requirements.txt 
 
 CMD [ "python", "infer_watcher.py" ]
