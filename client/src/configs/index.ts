@@ -19,7 +19,7 @@ export const config = {
 }
 
 Object.entries(config).forEach(([key, value]) => {
-  if (!value)
+  if (typeof value === 'undefined')
     throw new Error(
       `Env for the key ${key} isn't provided. Make sure that you set the environment variable properly.`
     )
