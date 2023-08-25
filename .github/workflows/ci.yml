@@ -33,11 +33,11 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-        if: steps.git-diff.outcome.diff
+        if: steps.git-diff.outputs.diff
 
       - name: Log in to the Container registry
         uses: docker/login-action@v2
-        if: steps.git-diff.outcome.diff
+        if: steps.git-diff.outputs.diff
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -46,7 +46,7 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
-        if: steps.git-diff.outcome.diff
+        if: steps.git-diff.outputs.diff
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.package }}
           flavor: latest=true
@@ -54,7 +54,7 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
-        if: steps.git-diff.outcome.diff
+        if: steps.git-diff.outputs.diff
         with:
           context: '{{defaultContext}}:${{ matrix.package }}'
           push: true
