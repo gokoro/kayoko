@@ -36,6 +36,7 @@ COPY --from=builder /app/rvc/ ./rvc
 
 WORKDIR /app/rvc
 
-RUN apt-get install ffmpeg -y -qq 
+RUN apt-get update -y \
+  && apt-get install ffmpeg -y -qq 
 
 CMD [ "python", "infer_watcher.py" ]
