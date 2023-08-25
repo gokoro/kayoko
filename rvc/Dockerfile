@@ -10,15 +10,20 @@ WORKDIR /app
 
 FROM base AS builder
 
+ADD https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/hubert_base.pt .
+ADD https://huggingface.co/benitheworld/kokomi-kr/resolve/main/kokomi-kr.zip .
+
 RUN apt-get install git unzip -y \
   && git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git rvc --depth=1 \
   && cat requirements.txt >> rvc/requirements.txt \
-  && python -m venv /opt/venv 
+  && python -m venv /opt/venv \
+  && unzip kokomi-kr.zip && rm -rf kokomi-kr.zip \
+  && mv hubert_base.pt rvc \
+  && mv kokomi-kr.pth rvc \
+  && mv added_IVF522_Flat_nprobe_1_kokomi-kr_v2.index rvc
 
 WORKDIR /app/rvc
 
-ADD https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/hubert_base.pt .
-ADD https://huggingface.co/benitheworld/kokomi-kr/resolve/main/kokomi-kr.zip .
 RUN unzip kokomi-kr.zip && rm -rf kokomi-kr.zip
 
 RUN pip install -r requirements.txt

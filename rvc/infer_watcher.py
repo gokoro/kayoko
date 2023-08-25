@@ -270,11 +270,11 @@ vc_single(
     f0_up_key=5,
     f0_file=None,
     f0_method="pm",
-    file_index="../assets/models/kokomi-kr.index",
+    file_index="./added_IVF522_Flat_nprobe_1_kokomi-kr_v2.index",
     file_index2="",
     index_rate=1,
     filter_radius=3,
     resample_sr=0,
     rms_mix_rate=0,
-    model_path="../assets/models/kokomi-kr.pth",
+    model_path="./kokomi-kr.pth",
 )
