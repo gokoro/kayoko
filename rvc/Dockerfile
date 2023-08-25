@@ -25,7 +25,7 @@ RUN wget https://raw.githubusercontent.com/RVC-Project/Retrieval-based-Voice-Con
 RUN rm -rf requirements.txt \
   && git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git . --depth=1 \
   && unzip ../kokomi-kr.zip && rm -rf ../kokomi-kr.zip \
-  && mv -t . ../hubert_base.pt ../kokomi-kr.pth ../added_IVF522_Flat_nprobe_1_kokomi-kr_v2.index ../infer_watcher.py 
+  && mv -t . ./kokomi-kr.pth ./added_IVF522_Flat_nprobe_1_kokomi-kr_v2.index ../hubert_base.pt ../infer_watcher.py 
 
 
 FROM python:3.8.17-slim
