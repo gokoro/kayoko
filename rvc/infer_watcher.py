@@ -24,7 +24,7 @@ from watchdog.events import FileSystemEventHandler
 # In your Terminal or CMD or whatever
 # python infer_cli.py [TRANSPOSE_VALUE] "[INPUT_PATH]" "[OUTPUT_PATH]" "[MODEL_PATH]" "[INDEX_FILE_PATH]" "[INFERENCE_DEVICE]" "[METHOD]"
 
-device = "mps"
+device = "cuda:0"
 is_half = False
 
 
