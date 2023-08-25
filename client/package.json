@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-polly": "^3.395.0",
-    "eris": "^0.17.2"
+    "eris": "^0.17.2",
+    "pino": "^8.15.0"
   },
   "devDependencies": {
     "@types/node": "^20.5.1",
