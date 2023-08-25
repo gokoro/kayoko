@@ -12,7 +12,7 @@ async function launch() {
     logger.error(err)
   })
 
-  process.on('exit', (code) => {
+  process.on('exit', () => {
     bot.disconnect({})
   })
 }
