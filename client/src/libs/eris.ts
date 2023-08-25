@@ -1,10 +1,32 @@
 import { Client } from 'eris'
 
-const token = process.env.DISCORD_BOT_TOKEN
+import { config } from '../configs/index.js'
+
+const token = config.DISCORD_BOT_TOKEN
 
 if (!token)
   throw new Error(
     `Token of Discord isn't set. Make sure your environment variable is valid.`
   )
 
-export const createBot = () => new Client(token)
+const ClientClass = Client
+
+export type ClientType = InstanceType<typeof ClientClass>
+
+export class ClientInstance {
+  private client: ClientType
+
+  constructor() {
+    this.client = new ClientClass(token, {
+      intents: ['guildMessages', 'guilds'],
+    })
+  }
+
+  getInstance() {
+    return this.client
+  }
+}
+
+const instance = new ClientInstance()
+
+export const getClient = () => instance.getInstance()

@@ -1,71 +1,63 @@
-import type { VoiceConnection } from 'eris'
+import { Constants } from 'eris'
 
-import * as fs from 'fs/promises'
+import type { RegisterModule, RegisterModuleReturnedContext } from '../types.js'
 
-import type { RegisterModule } from '../types.js'
+import { JoinHandler, LeaveHandler, SayHandler } from './handlers.js'
 
-import { createVoice, saveVoiceToDisk } from '../../libs/polly.js'
-import { getArg } from '../utils.js'
+const ReturnContext: RegisterModuleReturnedContext = {
+  guildCommands: [
+    {
+      name: 'say',
+      description: '코하루에게 말을 걸어봐요',
+      type: Constants.ApplicationCommandTypes.CHAT_INPUT,
+      options: [
+        {
+          name: 'phrases',
+          description: '코하루에게 듣고 싶은 말',
+          type: Constants.ApplicationCommandOptionTypes.STRING,
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'join',
+      description: '음성 채널에 코하루가 들어와요',
+      type: Constants.ApplicationCommandTypes.CHAT_INPUT,
+      options: [
+        {
+          name: 'channel',
+          description: '채널',
+          type: Constants.ApplicationCommandOptionTypes.CHANNEL,
+          // Incorrect `channel_types`; should be the list of channel type to be shown
+          // @ts-ignore
+          channel_types: [Constants.ChannelTypes.GUILD_VOICE],
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'leave',
+      description: '코하루가 음성 채널에서 나가요',
+      type: Constants.ApplicationCommandTypes.CHAT_INPUT,
+    },
+  ],
 
-const PATH = './output'
-
-async function watchDirectory(path: string) {
-  const watcher = fs.watch(path)
-
-  for await (const event of watcher) {
-    const filename = event.filename
-
-    if (filename?.includes('converted')) {
-      return filename
-    }
-  }
+  commandInteractions: [
+    {
+      name: 'say',
+      handler: SayHandler,
+    },
+    {
+      name: 'join',
+      handler: JoinHandler,
+    },
+    {
+      name: 'leave',
+      handler: LeaveHandler,
+    },
+  ],
 }
 
-export const voices: RegisterModule = (bot) => {
-  let connection: VoiceConnection | undefined
-
-  process.on('uncaughtException', (err) => {
-    bot.createMessage('1142773087872491530', err.message)
-  })
-
-  bot.on('messageCreate', async (msg) => {
-    if (msg.content.startsWith('!join')) {
-      const args = getArg(msg.content)
-      const id = args[0]
-
-      connection = await bot.joinVoiceChannel(id)
-    }
-  })
-
-  bot.on('messageCreate', async (msg) => {
-    if (msg.content.startsWith('!say')) {
-      if (connection?.playing) {
-        await bot.createMessage(msg.channel.id, '코하루가 말하고 이짜나!')
-        return
-      }
-
-      const message = msg.content.replace('!say', '').trim()
-      const hash = Date.now()
-      const file = `${PATH}/${hash}.mp3`
-
-      await saveVoiceToDisk(
-        () =>
-          createVoice({
-            Text: message,
-          }),
-        file
-      )
-
-      const converted = await watchDirectory(PATH)
-      const convertedFile = `${PATH}/${converted}`
-
-      connection?.play(convertedFile || file)
-    }
-  })
-
-  bot.on('messageCreate', async (msg) => {
-    if (msg.content.startsWith('!leave')) {
-      connection?.disconnect()
-    }
-  })
+export const voices: RegisterModule = () => {
+  return ReturnContext
 }

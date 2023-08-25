@@ -1,12 +1,15 @@
 import { register as registerBot } from './chats/index.js'
-import { createBot } from './libs/eris.js'
-import { createVoice, saveVoiceToDisk } from './libs/polly.js'
+import { getClient } from './libs/eris.js'
 
 async function launch() {
-  const bot = createBot()
+  const bot = getClient()
   registerBot(bot)
 
-  bot.connect()
+  await bot.connect()
+
+  process.on('uncaughtException', (err) => {
+    console.log(err)
+  })
 
   process.on('exit', (code) => {
     bot.disconnect({})
