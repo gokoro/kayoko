@@ -12,7 +12,9 @@ services:
     image: ghcr.io/gokoro/kayoko-rvc:latest
     volumes:
       - output:/app/rvc/voice-output
-
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=all
     deploy:
       resources:
         reservations:
