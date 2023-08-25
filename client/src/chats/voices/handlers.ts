@@ -36,7 +36,7 @@ export const SayHandler: InteractionHandler = async (interaction) => {
     return
   }
 
-  const message = interaction.data.options?.[0].value || '말을 해'
+  const message = interaction.data.options?.[0].value
 
   if (config.IS_LOCAL_TEST) {
     return await interaction.createMessage('로컬 테스트라고 하자나!')
@@ -58,6 +58,8 @@ export const SayHandler: InteractionHandler = async (interaction) => {
   const convertedFile = `${path}/${converted}`
 
   connection?.play(convertedFile || file)
+
+  interaction.createMessage(`말하고 있어!`)
 }
 
 export const JoinHandler: InteractionHandler = async (interaction) => {
