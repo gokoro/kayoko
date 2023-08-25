@@ -17,6 +17,6 @@ FROM base
 COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=build /app/dist /app/dist
 RUN mkdir output \
-  && apt-get update -y && apt-get install ffmpeg
+  && apt-get update -y && apt-get install ffmpeg -y
 
 CMD [ "node", "dist/app.js" ]
