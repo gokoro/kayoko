@@ -1,4 +1,4 @@
-FROM python:3.8.17 AS base
+FROM python:3.8.17 AS builder
 
 ENV PYTHONUNBUFFERED 1
 ENV PATH="/opt/venv/bin:$PATH"
