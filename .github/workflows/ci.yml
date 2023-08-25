@@ -25,11 +25,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Check if code is changed
-        uses: technote-space/get-diff-action@v4
+        uses: technote-space/get-diff-action@v6
         id: git-diff
         with:
           PATTERNS: |
-            ./${{ matrix.package }}/**/*
+            ${{ matrix.package }}/**/*
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
