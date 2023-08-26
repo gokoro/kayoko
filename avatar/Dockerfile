@@ -36,6 +36,6 @@ RUN apt-get update -y && apt-get install -y \
 WORKDIR /app
 
 COPY --from=builder /app/out/make/deb/x64 .
-RUN apt-get -f install
+RUN dpkg -i *.deb || (apt-get update && apt-get -f install)
 
 ENTRYPOINT [ "avatar" ]
