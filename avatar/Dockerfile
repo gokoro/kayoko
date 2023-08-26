@@ -16,4 +16,4 @@ RUN npm install && npm run make
 
 FROM scratch AS binaries
 
-COPY --from=build-server /app/out /
+COPY --from=builder /app/out /
