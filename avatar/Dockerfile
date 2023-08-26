@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y \
   libgconf-2-4 \
   libnss3 \
   libasound2 \
+  libdrm2 \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
