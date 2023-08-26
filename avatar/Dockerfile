@@ -19,4 +19,4 @@ WORKDIR /app
 
 COPY --from=builder /app/out .
 
-ENTRYPOINT [ "./out/avatar-linux-arm64/avatar" ]
+ENTRYPOINT [ "./out/avatar-linux-amd64/avatar" ]
