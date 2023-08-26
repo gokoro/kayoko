@@ -21,4 +21,4 @@ COPY --from=builder /app/out .
 
 RUN ls
 
-ENTRYPOINT [ "./out/avatar-linux-amd64/avatar" ]
+ENTRYPOINT [ "./avatar-linux-amd64/avatar" ]
