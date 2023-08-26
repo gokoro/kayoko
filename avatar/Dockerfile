@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM fedora:latest AS builder
 
 RUN dnf update -y \
   && dnf install rpm-build -y \
@@ -13,3 +13,7 @@ WORKDIR /app
 
 # RUN pnpm install && pnpm make
 RUN npm install && npm run make
+
+FROM scratch AS binaries
+
+COPY --from=build-server /app/out /
