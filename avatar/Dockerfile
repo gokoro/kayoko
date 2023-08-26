@@ -16,7 +16,7 @@ COPY --from=builder /app/out /
 FROM debian:bookworm-slim
 
 RUN apt-get update && apt-get install -y \
-  libgobject-2.0-0 \
+  libglib2.0-0 \
   libgtk-3-0 \
   libx11-xcb1 \
   libxtst6 \
