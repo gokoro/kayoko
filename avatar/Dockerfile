@@ -31,9 +31,9 @@ FROM debian:bookworm
 RUN apt-get update -y && apt-get install -y \
   kde-cli-tools \
   trash-cli \
-  libglib2.0-bin \
+  libglib2.0-bin 
 
-  WORKDIR /app
+WORKDIR /app
 
 COPY --from=builder /app/out/make/deb/x64 .
 RUN ls -al && dpkg -i *.deb
