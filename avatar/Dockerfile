@@ -36,6 +36,6 @@ RUN apt-get update -y && apt-get install -y \
 WORKDIR /app
 
 COPY --from=builder /app/out/make/deb/x64 .
-RUN ls -al && apt install *.deb
+RUN apt-get -f install
 
 ENTRYPOINT [ "avatar" ]
