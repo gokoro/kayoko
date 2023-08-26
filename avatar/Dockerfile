@@ -7,7 +7,8 @@ COPY . /app
 
 WORKDIR /app
 
-RUN pnpm install && pnpm make
+RUN apt-get update && apt-get install dpkg fakeroot \
+  && pnpm install && pnpm make
 
 FROM scratch AS binaries
 
