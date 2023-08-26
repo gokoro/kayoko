@@ -28,9 +28,16 @@ FROM debian:bookworm-slim
 #   libdrm2 \
 #   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update -y && apt-get install -y \
+  kde-cli-tools \
+  kde-runtime \
+  trash-cli \
+  libglib2.0-bin \
+  gvfs-bin
+
 WORKDIR /app
 
 COPY --from=builder /app/out/make/deb/x64 .
-RUN ls -al && dpkg -i avatar_1.0.0_amd64.deb
+RUN ls -al && dpkg -i *.deb
 
 ENTRYPOINT [ "avatar" ]
