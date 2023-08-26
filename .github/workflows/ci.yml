@@ -2,7 +2,7 @@ name: Create and publish a Docker image
 
 on:
   push:
-    branches: ['main']
+    # branches: ['main']
 
 env:
   REGISTRY: ghcr.io
@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: ['client', 'rvc']
+        package: ['client', 'rvc', 'avatar']
 
     steps:
       - name: Checkout repository
