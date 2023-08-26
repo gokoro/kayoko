@@ -14,7 +14,7 @@ FROM scratch AS binaries
 
 COPY --from=builder /app/out /
 
-FROM debian:bookworm-slim
+FROM debian:bookworm
 
 # RUN apt-get update && apt-get install -y \
 #   libglib2.0-0 \
@@ -30,12 +30,10 @@ FROM debian:bookworm-slim
 
 RUN apt-get update -y && apt-get install -y \
   kde-cli-tools \
-  kde-runtime \
   trash-cli \
   libglib2.0-bin \
-  gvfs-bin
 
-WORKDIR /app
+  WORKDIR /app
 
 COPY --from=builder /app/out/make/deb/x64 .
 RUN ls -al && dpkg -i *.deb
