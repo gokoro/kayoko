@@ -1,7 +1,7 @@
 # FROM fedora:latest AS builder
 FROM node:18 AS builder
 
-RUN corepack active
+RUN corepack enable
 
 COPY . /app
 
