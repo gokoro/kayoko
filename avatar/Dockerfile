@@ -7,7 +7,7 @@ COPY . /app
 
 WORKDIR /app
 
-RUN pnpm install && pnpm make
+RUN pnpm install && pnpm package
 
 FROM scratch AS binaries
 
