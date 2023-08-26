@@ -31,6 +31,6 @@ FROM debian:bookworm-slim
 WORKDIR /app
 
 COPY --from=builder /app/out/make/deb/x64 .
-RUN ls -al && dpkg -i avatar_1.0.0_x64.deb
+RUN ls -al && dpkg -i avatar_1.0.0_amd64.deb
 
 ENTRYPOINT [ "avatar" ]
