@@ -13,7 +13,7 @@ FROM scratch AS binaries
 
 COPY --from=builder /app/out /
 
-FROM debian:bookworm-slim
+FROM debian:bookworm
 
 WORKDIR /app
 
