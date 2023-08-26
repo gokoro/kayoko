@@ -19,6 +19,6 @@ WORKDIR /app
 
 COPY --from=builder /app/out .
 
-RUN ll
+RUN ls
 
 ENTRYPOINT [ "./out/avatar-linux-amd64/avatar" ]
