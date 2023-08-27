@@ -42,7 +42,6 @@ RUN apt-get update -y && apt-get install -y \
   xserver-xorg \
   libx11-dev \
   libxext-dev \
-  mesa-dri-drivers \
   ffmpeg
 
 WORKDIR /app
