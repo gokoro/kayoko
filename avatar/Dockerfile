@@ -57,5 +57,5 @@ RUN if [ "$BUILDARCH" = "amd64" ]; then \
 
 # ENTRYPOINT xvfb-run -n 10 -s '-screen 0 1000x1200x24' avatar --no-sandbox
 # ENTRYPOINT [ "xvfb-run -n 10 -s '-screen 0 1000x1200x24' avatar --no-sandbox" ]
-ENTRYPOINT Xvfb :10 -screen 0 1000x1200x24 & avatar --no-sandbox --headless
+ENTRYPOINT Xvfb :10 -screen 0 1000x1200x24 & avatar --no-sandbox --headless --use-gl=egl
 # ENTRYPOINT [ "Xvfb :10 -screen 0 1000x1200x24 & avatar --no-sandbox" ]
