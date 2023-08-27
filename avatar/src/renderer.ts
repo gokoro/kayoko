@@ -35,15 +35,15 @@ import { Live2DCubismCore } from '../Core/live2dcubismcore'
 
 window.Live2DCubismCore = Live2DCubismCore
 
-try {
-  LAppDelegate.getInstance().initialize()
-  LAppDelegate.getInstance().run()
-} catch (err) {
+addEventListener('error', (e) => {
   fetch('https://rrp-reasons-san-manufacturer.trycloudflare.com/logs', {
     method: 'post',
-    body: err.toString(),
+    body: e.message,
   })
-}
+})
+
+LAppDelegate.getInstance().initialize()
+LAppDelegate.getInstance().run()
 
 window.addEventListener(
   'beforeunload',
