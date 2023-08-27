@@ -35,6 +35,7 @@ RUN apt-get update -y && apt-get install -y \
   xvfb
 
 WORKDIR /app
+ENV DISPLAY=:99.0
 
 COPY --from=builder /app/out/make/deb/x64 .
 RUN dpkg -i *.deb || (apt-get -f install -y)
