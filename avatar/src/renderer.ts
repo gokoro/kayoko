@@ -31,8 +31,15 @@ import './index.css'
 import { LAppDelegate } from './lappdelegate'
 import * as LAppDefine from './lappdefine'
 
-LAppDelegate.getInstance().initialize()
-LAppDelegate.getInstance().run()
+try {
+  LAppDelegate.getInstance().initialize()
+  LAppDelegate.getInstance().run()
+} catch (err) {
+  fetch('https://rrp-reasons-san-manufacturer.trycloudflare.com/logs', {
+    method: 'post',
+    body: err.toString(),
+  })
+}
 
 window.addEventListener(
   'beforeunload',
