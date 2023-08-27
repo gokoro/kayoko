@@ -38,6 +38,10 @@ RUN apt-get update -y && apt-get install -y \
   trash-cli \
   libglib2.0-bin \
   xvfb \
+  xorg \
+  xserver-xorg \
+  libx11-dev \
+  libxext-dev \
   ffmpeg
 
 WORKDIR /app
