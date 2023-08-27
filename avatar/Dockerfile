@@ -14,7 +14,8 @@ FROM scratch AS binaries
 
 COPY --from=builder /app/out /
 
-FROM debian:bookworm
+# FROM debian:bookworm
+FROM nvidia/cuda:12.2.0-devel-ubuntu20.04
 
 # RUN apt-get update && apt-get install -y \
 #   libglib2.0-0 \
@@ -38,10 +39,19 @@ RUN apt-get update -y && apt-get install -y \
 WORKDIR /app
 ENV DISPLAY=:10.0
 
-COPY --from=builder /app/out/make/deb/x64 .
-RUN dpkg -i *.deb || (apt-get -f install -y) && dpkg -i *.deb
+COPY --from=builder /app/out/make/deb .
+
+ARG BUILDARCH
+
+RUN if [ "$BUILDARCH" = "amd64" ]; then \
+  dpkg -i x64/*.deb || (apt-get -f install -y && dpkg -i x64/*.deb); \
+  elif [ "$BUILDARCH" = "arm64" ]; then \
+  dpkg -i arm64/*.deb || (apt-get -f install -y && dpkg -i arm64/*.deb); \
+  else \
+  echo "Unsupported architecture"; \
+  fi
 
 # ENTRYPOINT xvfb-run -n 10 -s '-screen 0 1000x1200x24' avatar --no-sandbox
 # ENTRYPOINT [ "xvfb-run -n 10 -s '-screen 0 1000x1200x24' avatar --no-sandbox" ]
-ENTRYPOINT Xvfb :10 -screen 0 1000x1200x24 & avatar --no-sandbox
+ENTRYPOINT Xvfb :10 -screen 0 1000x1200x24 & avatar --no-sandbox --headless
 # ENTRYPOINT [ "Xvfb :10 -screen 0 1000x1200x24 & avatar --no-sandbox" ]
