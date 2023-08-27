@@ -15,8 +15,8 @@ FROM scratch AS binaries
 COPY --from=builder /app/out /
 
 # FROM debian:bookworm
-# FROM nvidia/cuda:12.2.0-devel-ubuntu20.04
-FROM nvidia/opengl:base
+FROM nvidia/cuda:12.2.0-devel-ubuntu20.04
+# FROM nvidia/opengl:base
 
 # RUN apt-get update && apt-get install -y \
 #   libglib2.0-0 \
@@ -42,6 +42,7 @@ RUN apt-get update -y && apt-get install -y \
   xserver-xorg \
   libx11-dev \
   libxext-dev \
+  mesa-dri-drivers \
   ffmpeg
 
 WORKDIR /app
