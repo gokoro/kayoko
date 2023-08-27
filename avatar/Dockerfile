@@ -29,6 +29,9 @@ FROM nvidia/cuda:12.2.0-devel-ubuntu20.04
 #   libdrm2 \
 #   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+ENV TZ=Asia/Seoul
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update -y && apt-get install -y \
   kde-cli-tools \
   trash-cli \
@@ -38,8 +41,6 @@ RUN apt-get update -y && apt-get install -y \
 
 WORKDIR /app
 
-ENV TZ=Asia/Seoul
-ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=:10.0
 
 COPY --from=builder /app/out/make/deb .
