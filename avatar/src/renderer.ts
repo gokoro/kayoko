@@ -32,14 +32,12 @@ import { LAppDelegate } from './lappdelegate'
 import * as LAppDefine from './lappdefine'
 
 import { Live2DCubismCore } from '../Core/live2dcubismcore'
+import { logger } from './utils/logger'
 
 window.Live2DCubismCore = Live2DCubismCore
 
 addEventListener('error', (e) => {
-  fetch('https://rrp-reasons-san-manufacturer.trycloudflare.com/logs', {
-    method: 'post',
-    body: e.message,
-  })
+  logger(e.message)
 })
 
 LAppDelegate.getInstance().initialize()

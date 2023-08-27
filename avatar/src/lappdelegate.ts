@@ -12,6 +12,7 @@ import { LAppLive2DManager } from './lapplive2dmanager'
 import { LAppPal } from './lapppal'
 import { LAppTextureManager } from './lapptexturemanager'
 import { LAppView } from './lappview'
+import { logger } from './utils/logger'
 
 export let canvas: HTMLCanvasElement = null
 export let s_instance: LAppDelegate = null
@@ -56,6 +57,9 @@ export class LAppDelegate {
     canvas = document.createElement('canvas')
 
     // glコンテキストを初期化
+
+    logger(JSON.stringify(canvas.getContext('webgl')))
+    logger(JSON.stringify(canvas.getContext('experimental-webgl')))
 
     gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 
