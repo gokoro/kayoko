@@ -31,7 +31,7 @@ FROM debian:bookworm
 RUN apt-get update -y && apt-get install -y \
   kde-cli-tools \
   trash-cli \
-  libglib2.0-bin  \
+  libglib2.0-bin \
   xvfb
 
 WORKDIR /app
@@ -39,4 +39,4 @@ WORKDIR /app
 COPY --from=builder /app/out/make/deb/x64 .
 RUN dpkg -i *.deb || (apt-get -f install -y)
 
-ENTRYPOINT [ "xvfb", "avatar", "--no-sandbox" ]
+ENTRYPOINT [ "xvfb-run", "avatar", "--no-sandbox" ]
