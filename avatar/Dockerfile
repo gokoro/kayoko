@@ -39,6 +39,7 @@ RUN apt-get update -y && apt-get install -y \
 WORKDIR /app
 
 ENV TZ=Asia/Seoul
+ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=:10.0
 
 COPY --from=builder /app/out/make/deb .
