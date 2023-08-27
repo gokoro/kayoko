@@ -37,6 +37,8 @@ RUN apt-get update -y && apt-get install -y \
   ffmpeg
 
 WORKDIR /app
+
+ENV TZ=Asia/Seoul
 ENV DISPLAY=:10.0
 
 COPY --from=builder /app/out/make/deb .
