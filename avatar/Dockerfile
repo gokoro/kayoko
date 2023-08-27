@@ -32,7 +32,8 @@ RUN apt-get update -y && apt-get install -y \
   kde-cli-tools \
   trash-cli \
   libglib2.0-bin \
-  xvfb
+  xvfb \
+  ffmpeg
 
 WORKDIR /app
 ENV DISPLAY=:10.0
@@ -40,6 +41,7 @@ ENV DISPLAY=:10.0
 COPY --from=builder /app/out/make/deb/x64 .
 RUN dpkg -i *.deb || (apt-get -f install -y) && dpkg -i *.deb
 
-ENTRYPOINT xvfb-run -n 10 -s '-screen 0 1000x1200x24' avatar --no-sandbox
+# ENTRYPOINT xvfb-run -n 10 -s '-screen 0 1000x1200x24' avatar --no-sandbox
 # ENTRYPOINT [ "xvfb-run -n 10 -s '-screen 0 1000x1200x24' avatar --no-sandbox" ]
+ENTRYPOINT Xvfb :10 -screen 0 1000x1200x24 & avatar --no-sandbox
 # ENTRYPOINT [ "Xvfb :10 -screen 0 1000x1200x24 & avatar --no-sandbox" ]
