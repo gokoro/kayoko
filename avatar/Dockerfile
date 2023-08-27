@@ -38,4 +38,4 @@ WORKDIR /app
 COPY --from=builder /app/out/make/deb/x64 .
 RUN dpkg -i *.deb || (apt-get -f install -y)
 
-ENTRYPOINT [ "avatar" ]
+ENTRYPOINT [ "avatar", "--no-sandbox" ]
