@@ -39,4 +39,4 @@ WORKDIR /app
 COPY --from=builder /app/out/make/deb/x64 .
 RUN dpkg -i *.deb || (apt-get -f install -y)
 
-ENTRYPOINT [ "xvfb-run", "-s", '"-ac -screen 0 1280x1024x24"', "-n", "10", "avatar", "--no-sandbox" ]
+ENTRYPOINT [ "xvfb-run", "-n", "10", "avatar", "--no-sandbox" ]
