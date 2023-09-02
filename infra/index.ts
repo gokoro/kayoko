@@ -81,6 +81,7 @@ const service = new aws.ecs.Service(`kayoko-service`, {
   cluster: cluster.id,
   taskDefinition: task.taskDefinition.arn,
   desiredCount: 1,
+  forceNewDeployment: true,
 })
 
 export const serviceName = service.name
