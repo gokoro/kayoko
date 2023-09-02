@@ -14,8 +14,6 @@ export const CLIENT_DISCORD_DEFAULT_GUILD_ID = config.require(
   'client-discord-default-guild-id'
 )
 
-export const CLIENT_IS_AWS = config.require('client-is-aws')
-
 export const CLIENT_VOICE_OUTPUT_PATH = config.require(
   'client-voice-output-path'
 )

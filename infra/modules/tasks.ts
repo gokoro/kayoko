@@ -27,7 +27,7 @@ const containers: Record<string, Container> = {
       },
       {
         name: 'IS_AWS',
-        value: config.CLIENT_IS_AWS,
+        value: 'true',
       },
       {
         name: 'VOICE_OUTPUT_PATH',
