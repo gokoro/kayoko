@@ -11,5 +11,4 @@ config:
   aws:region: <string>
   infra:client-discord-bot-token: <string>
   infra:client-discord-default-guild-id: <string>
-  infra:client-voice-output-path: <string>
 ```

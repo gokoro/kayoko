@@ -29,10 +29,6 @@ const containers: Record<string, Container> = {
         name: 'IS_AWS',
         value: 'true',
       },
-      {
-        name: 'VOICE_OUTPUT_PATH',
-        value: config.CLIENT_VOICE_OUTPUT_PATH,
-      },
     ],
     // logConfiguration: {
     //   logDriver: 'awslogs',
