@@ -3,8 +3,10 @@ import { Input, Output } from '@pulumi/pulumi'
 
 // For activation of GPU for all containers by default
 // sed -i 's/\(OPTIONS="--default-ulimit nofile=[^"]*\)"/\1 --default-runtime nvidia"/' /etc/sysconfig/docker
-const SED =
-  'c2VkIC1pICdzL1woT1BUSU9OUz0iLS1kZWZhdWx0LXVsaW1pdCBub2ZpbGU9W14iXSpcKSIvXDEgLS1kZWZhdWx0LXJ1bnRpbWUgbnZpZGlhIi8nIC9ldGMvc3lzY29uZmlnL2RvY2tlcg'
+const SED = Buffer.from(
+  'c2VkIC1pICdzL1woT1BUSU9OUz0iLS1kZWZhdWx0LXVsaW1pdCBub2ZpbGU9W14iXSpcKSIvXDEgLS1kZWZhdWx0LXJ1bnRpbWUgbnZpZGlhIi8nIC9ldGMvc3lzY29uZmlnL2RvY2tlcg',
+  'base64'
+).toString()
 
 const ami = aws.ec2.getAmi({
   mostRecent: true,
@@ -71,7 +73,7 @@ export function create({
     #!/bin/bash
     echo "ECS_CLUSTER=${clusterName}" >> /etc/ecs/ecs.config
   `
-  const userData = Buffer.from(rawUserData).toString('base64') + SED
+  const userData = Buffer.from(rawUserData + SED, 'utf-8').toString('base64')
 
   const launchTemplate = new aws.ec2.LaunchTemplate('kayoko-launch-template', {
     imageId: ami.then((image) => image.id),
