@@ -10,11 +10,12 @@ const getBool = (key: string, value: string | undefined) => {
 }
 
 export const config = {
-  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID as string,
-  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY as string,
+  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID ?? '',
+  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY ?? '',
   DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN as string,
   DISCORD_DEFAULT_GUILD_ID: process.env.DISCORD_DEFAULT_GUILD_ID as string,
-  IS_LOCAL_TEST: getBool('IS_LOCAL_TEST', process.env.IS_LOCAL_TEST),
+  IS_LOCAL_TEST: getBool('IS_LOCAL_TEST', process.env.IS_LOCAL_TEST ?? 'false'),
+  IS_AWS: getBool('IS_LOCAL_TEST', process.env.IS_LOCAL_TEST ?? 'false'),
   VOICE_OUTPUT_PATH: process.env.VOICE_OUTPUT_PATH ?? './output',
 }
 

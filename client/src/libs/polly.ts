@@ -3,23 +3,18 @@ import type { SynthesizeSpeechCommandInput } from '@aws-sdk/client-polly'
 import { PollyClient, SynthesizeSpeechCommand } from '@aws-sdk/client-polly'
 import * as fs from 'fs/promises'
 
+import { config } from '../configs/index.js'
+
 const region = 'ap-northeast-2'
-
-const accessKeyId = process.env.AWS_ACCESS_KEY_ID
-const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
-
-if (!accessKeyId || !secretAccessKey) {
-  throw new Error(
-    `AWS credentials aren't set. Make sure your environment variables are valid.`
-  )
-}
 
 export const client = new PollyClient({
   region,
-  credentials: {
-    accessKeyId,
-    secretAccessKey,
-  },
+  ...(!config.IS_AWS && {
+    credentials: {
+      accessKeyId: config.AWS_ACCESS_KEY_ID,
+      secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
+    },
+  }),
 })
 
 export function createVoice(
