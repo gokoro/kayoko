@@ -44,6 +44,7 @@ import { LAppPal } from './lapppal'
 import { TextureInfo } from './lapptexturemanager'
 import { LAppWavFileHandler } from './lappwavfilehandler'
 import { CubismMoc } from '../Framework/src/model/cubismmoc'
+import { CubismMotionManager } from '../Framework/src/motion/cubismmotionmanager'
 
 enum LoadStep {
   LoadAssets,
@@ -457,16 +458,26 @@ export class LAppModel extends CubismUserModel {
     this._model.loadParameters() // 前回セーブされた状態をロード
     if (this._motionManager.isFinished()) {
       // モーションの再生がない場合、待機モーションの中からランダムで再生する
-      this.startRandomMotion(
-        LAppDefine.MotionGroupIdle,
-        LAppDefine.PriorityIdle
-      )
+      // this.startRandomMotion(
+      //   LAppDefine.MotionGroupIdle,
+      //   LAppDefine.PriorityIdle
+      // )
     } else {
       motionUpdated = this._motionManager.updateMotion(
         this._model,
         deltaTimeSeconds
       ) // モーションを更新
     }
+
+    motionUpdated! = this._rightArmMotionManager.updateMotion(
+      this._model,
+      deltaTimeSeconds
+    ) // < Add.
+    motionUpdated! = this._leftArmMotionManager.updateMotion(
+      this._model,
+      deltaTimeSeconds
+    ) // < Add.
+
     this._model.saveParameters() // 状態を保存
     //--------------------------------------------------------------------------
 
@@ -881,7 +892,13 @@ export class LAppModel extends CubismUserModel {
     this._allMotionCount = 0
     this._wavFileHandler = new LAppWavFileHandler()
     this._consistency = false
+
+    this._rightArmMotionManager = new CubismMotionManager() // <<< Add!
+    this._leftArmMotionManager = new CubismMotionManager() // <<< Add!
   }
+
+  _rightArmMotionManager: CubismMotionManager /// <<< Add!
+  _leftArmMotionManager: CubismMotionManager /// <<< Add!
 
   _modelSetting: ICubismModelSetting // モデルセッティング情報
   _modelHomeDir: string // モデルセッティングが置かれたディレクトリ

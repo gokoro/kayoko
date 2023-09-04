@@ -148,20 +148,20 @@ export class LAppView {
     )
 
     // 歯車画像初期化
-    imageName = LAppDefine.GearImageName
-    const initGearTexture = (textureInfo: TextureInfo): void => {
-      const x = width - textureInfo.width * 0.5
-      const y = height - textureInfo.height * 0.5
-      const fwidth = textureInfo.width
-      const fheight = textureInfo.height
-      this._gear = new LAppSprite(x, y, fwidth, fheight, textureInfo.id)
-    }
+    // imageName = LAppDefine.GearImageName
+    // const initGearTexture = (textureInfo: TextureInfo): void => {
+    //   const x = width - textureInfo.width * 0.5
+    //   const y = height - textureInfo.height * 0.5
+    //   const fwidth = textureInfo.width
+    //   const fheight = textureInfo.height
+    //   this._gear = new LAppSprite(x, y, fwidth, fheight, textureInfo.id)
+    // }
 
-    textureManager.createTextureFromPngFile(
-      resourcesPath + imageName,
-      false,
-      initGearTexture
-    )
+    // textureManager.createTextureFromPngFile(
+    //   resourcesPath + imageName,
+    //   false,
+    //   initGearTexture
+    // )
 
     // シェーダーを作成
     if (this._programId == null) {

@@ -26,19 +26,12 @@
  * ```
  */
 
-import './index.css'
-
 import { LAppDelegate } from './lappdelegate'
 import * as LAppDefine from './lappdefine'
 
 import { Live2DCubismCore } from '../Core/live2dcubismcore'
-import { logger } from './utils/logger'
 
 window.Live2DCubismCore = Live2DCubismCore
-
-addEventListener('error', (e) => {
-  logger(e.message)
-})
 
 LAppDelegate.getInstance().initialize()
 LAppDelegate.getInstance().run()
