@@ -8,6 +8,7 @@ type Volume = aws.types.input.ecs.TaskDefinitionVolume
 
 const containers: Record<string, Container> = {
   client: {
+    name: 'client',
     image: 'ghcr.io/gokoro/kayoko-client:latest',
     essential: true,
     mountPoints: [
@@ -41,6 +42,7 @@ const containers: Record<string, Container> = {
     // },
   },
   rvc: {
+    name: 'rvc',
     image: 'ghcr.io/gokoro/kayoko-rvc:latest',
     essential: true,
     mountPoints: [
@@ -78,7 +80,8 @@ const pollyPolicy = aws.iam.getPolicy({
 export function create() {
   const defaultTask = new awsx.ecs.EC2TaskDefinition('kayoko-default-task', {
     memory: '4096',
-    networkMode: 'host',
+    networkMode: 'bridge',
+
     runtimePlatform: {
       operatingSystemFamily: 'LINUX',
       cpuArchitecture: 'X86_64',

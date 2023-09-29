@@ -23,7 +23,7 @@ const cluster = new aws.ecs.Cluster('kayoko-ecs-cluster', {
   ],
 })
 
-const { vpc, subnets } = createVpc()
+const { vpc, subnets, defaultSecurityGroup } = createVpc()
 
 const { launchTemplate } = createTemplate({
   clusterName,
