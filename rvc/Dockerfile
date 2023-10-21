@@ -16,6 +16,7 @@ WORKDIR /app/rvc
 
 # Install deps for caching
 RUN wget https://raw.githubusercontent.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/main/requirements.txt \
+  && sed -i '/fastapi/d' requirements.txt \
   && cat ../requirements.txt >> requirements.txt \
   && python -m venv /opt/venv \
   && pip install -r requirements.txt \
@@ -42,4 +43,4 @@ WORKDIR /app/rvc
 RUN apt-get update -y \
   && apt-get install ffmpeg -y -qq 
 
-CMD [ "python", "infer_watcher.py" ]
+CMD [ "uvicorn", "preapi:app" ]
