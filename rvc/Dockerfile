@@ -9,8 +9,8 @@ COPY . /app
 WORKDIR /app
 
 # Fetch models
-ADD https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/hubert_base.pt .
-ADD https://huggingface.co/benitheworld/kokomi-kr/resolve/main/kokomi-kr.zip .
+# ADD https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/hubert_base.pt .
+# ADD https://huggingface.co/benitheworld/kokomi-kr/resolve/main/kokomi-kr.zip .
 
 WORKDIR /app/rvc
 
@@ -19,14 +19,12 @@ RUN wget https://raw.githubusercontent.com/RVC-Project/Retrieval-based-Voice-Con
   && sed -i '/fastapi/d' requirements.txt \
   && cat ../requirements.txt >> requirements.txt \
   && python -m venv /opt/venv \
-  && pip install -r requirements.txt \
-  && apt-get install git unzip -y
+  && pip install -r requirements.txt 
 
 # Download sources and move needed models
 RUN rm -rf requirements.txt \
   && git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git . --depth=1 \
-  && unzip ../kokomi-kr.zip && rm -rf ../kokomi-kr.zip \
-  && mv -t . ../hubert_base.pt ../infer_watcher.py 
+  && mv ../* . 
 
 
 FROM python:3.8.17-slim
