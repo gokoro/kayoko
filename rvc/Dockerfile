@@ -17,9 +17,9 @@ RUN wget https://raw.githubusercontent.com/RVC-Project/Retrieval-based-Voice-Con
   && pip install -r requirements.txt 
 
 # Download sources and move needed models
-RUN rm -rf /requirements.txt \
+RUN rm -rf requirements.txt \
   && git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git . --depth=1 \
-  && mv /app/* /rvc
+  && mv /app/* .
 
 
 FROM python:3.8.17-slim
