@@ -6,9 +6,6 @@ from uuid import uuid4
 import os
 
 from api import convert
-from assets import prepare_assets
-
-prepare_assets()
 
 
 if not os.path.exists("raw-audio"):

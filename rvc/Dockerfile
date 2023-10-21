@@ -8,10 +8,6 @@ RUN apt-get update -y -qq
 COPY . /app
 WORKDIR /app
 
-# Fetch models
-# ADD https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/hubert_base.pt .
-# ADD https://huggingface.co/benitheworld/kokomi-kr/resolve/main/kokomi-kr.zip .
-
 WORKDIR /app/rvc
 
 # Install deps for caching

@@ -14,6 +14,8 @@ import numpy as np
 import torch
 import sys
 import os
+from assets import prepare_assets
+
 
 ####
 # USAGE
@@ -23,6 +25,8 @@ import os
 
 device = "cuda:0"
 is_half = False
+
+prepare_assets()
 
 
 class Config:
