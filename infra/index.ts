@@ -2,7 +2,14 @@ import * as aws from '@pulumi/aws'
 
 import { create as createVpc } from './modules/vpc'
 import { create as createTemplate } from './modules/template'
-import { create as createTasks } from './modules/tasks'
+import { create as createTasks } from './modules/tasks/rvc'
+
+import { registerAll as registerServices } from './modules/services'
+
+const credentialProvider = new aws.Provider('key', {
+  accessKey: process.env.AWS_ACCESS_KEY_ID,
+  secretKey: process.env.AWS_SECRET_ACCESS_KEY,
+})
 
 // Specify name of cluster explicitly, due to the `output` type of Pulumi.
 // The name of cluster should be included in the Launch Template,
@@ -38,7 +45,7 @@ const { launchTemplate } = createTemplate({
   securityGroupId: vpc.defaultSecurityGroupId,
 })
 
-const [task] = createTasks()
+// const [task] = createTasks()
 
 const ag = new aws.autoscaling.Group('kayoko-ag', {
   vpcZoneIdentifiers: subnets.map((subnet) => subnet.id),
@@ -83,28 +90,6 @@ const clusterCapacityProviders = new aws.ecs.ClusterCapacityProviders(
   }
 )
 
-const service = new aws.ecs.Service(`kayoko-service`, {
-  name: 'kayoko-service',
-  cluster: cluster.id,
-  serviceConnectConfiguration: {
-    enabled: true,
-    namespace: namespace.arn,
-    services: [
-      {
-        portName: 'http',
-        discoveryName: 'rvc',
-        clientAlias: [
-          {
-            port: 5000,
-          },
-        ],
-      },
-    ],
-  },
-  taskDefinition: task.arn,
-  desiredCount: 1,
-  forceNewDeployment: true,
-})
+registerServices({ clusterId: cluster.id, namespaceArn: namespace.arn })
 
-export const serviceName = service.name
 export { clusterName }
