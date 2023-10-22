@@ -17,6 +17,7 @@ export const config = {
   IS_LOCAL_TEST: getBool('IS_LOCAL_TEST', process.env.IS_LOCAL_TEST ?? 'false'),
   IS_AWS: getBool('IS_LOCAL_TEST', process.env.IS_LOCAL_TEST ?? 'false'),
   VOICE_OUTPUT_PATH: process.env.VOICE_OUTPUT_PATH ?? './output',
+  RVC_URL: process.env.RVC_URL as string,
 }
 
 Object.entries(config).forEach(([key, value]) => {

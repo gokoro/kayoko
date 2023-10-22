@@ -35,13 +35,23 @@ export async function saveVoiceToDisk(
   instance: () => ReturnType<typeof createVoice>,
   path: string
 ) {
+  const buffer = await getVoiceAsBuffer(instance)
+
+  fs.writeFile(path, buffer)
+}
+
+export async function getVoiceAsBuffer(
+  instance: () => ReturnType<typeof createVoice>
+) {
   const { AudioStream } = await instance()
 
   if (!AudioStream) {
     throw new Error('Error occured during creating voices from Amazon Polly.')
   }
 
+  AudioStream.transformToWebStream()
+
   const buffer = await AudioStream.transformToByteArray()
 
-  fs.writeFile(path, buffer)
+  return buffer
 }

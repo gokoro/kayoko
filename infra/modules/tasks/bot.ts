@@ -11,12 +11,6 @@ const containers: Record<string, Type.Container> = {
     image: 'ghcr.io/gokoro/kayoko-client:latest',
 
     essential: true,
-    mountPoints: [
-      {
-        containerPath: '/app/output',
-        sourceVolume: 'output',
-      },
-    ],
     environment: [
       {
         name: 'DISCORD_BOT_TOKEN',
@@ -25,6 +19,10 @@ const containers: Record<string, Type.Container> = {
       {
         name: 'DISCORD_DEFAULT_GUILD_ID',
         value: config.CLIENT_DISCORD_DEFAULT_GUILD_ID,
+      },
+      {
+        name: 'RVC_URL',
+        value: 'http://rvc.kayoko-area:5000',
       },
       {
         name: 'IS_AWS',
@@ -42,13 +40,6 @@ const containers: Record<string, Type.Container> = {
     // },
   },
 }
-
-const volumes: Type.Volume[] = [
-  {
-    name: 'output',
-    hostPath: '/app/output',
-  },
-]
 
 const instanceAssumeRolePolicy = aws.iam.getPolicyDocument({
   statements: [
@@ -93,7 +84,6 @@ export function create() {
     },
     taskRoleArn: role.arn,
     containerDefinitions: JSON.stringify(Object.values(containers)),
-    volumes,
   })
 
   return defaultTask
