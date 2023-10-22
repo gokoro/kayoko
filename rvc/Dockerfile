@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 ENV PATH="/opt/venv/bin:$PATH"
 
 RUN apt-get update -y -qq 
-COPY . /app
+COPY . /rvc
 
 WORKDIR /rvc
 
