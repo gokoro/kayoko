@@ -7,12 +7,6 @@ const containers: Record<string, Type.Container> = {
     name: 'rvc',
     image: 'ghcr.io/gokoro/kayoko-rvc:latest',
     essential: true,
-    healthCheck: {
-      command: [
-        'CMD',
-        'curl --request GET --url http://localhost:5000/health || exit 1',
-      ],
-    },
     portMappings: [
       {
         name: 'http',
