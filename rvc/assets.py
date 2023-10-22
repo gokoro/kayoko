@@ -1,6 +1,7 @@
 import os
 import requests
 import zipfile
+import shutil
 
 
 def download_file(url, filename):
@@ -8,6 +9,12 @@ def download_file(url, filename):
     with open(filename, "wb") as file:
         for chunk in response.iter_content(chunk_size=8192):
             file.write(chunk)
+
+
+def move_file_to_directory(file_path, target_directory):
+    if not os.path.exists(target_directory):
+        os.makedirs(target_directory)
+    shutil.move(file_path, target_directory)
 
 
 def prepare_assets():
@@ -39,3 +46,9 @@ def prepare_assets():
     # Remove the zip file after extraction
     os.remove(kokomi_file)
     print(f"Removed {kokomi_file} after extraction.")
+
+    # Move kokomi-kr.pth to assets/weights
+    pth_file = "kokomi-kr.pth"
+    if os.path.exists(pth_file):
+        print(f"Moving {pth_file} to assets/weights...")
+        move_file_to_directory(pth_file, "assets/weights")

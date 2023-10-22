@@ -1,11 +1,12 @@
-from fastapi import FastAPI, File, UploadFile, Response
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import FileResponse
 from typing_extensions import Annotated
 import shutil
 from pathlib import Path
 from uuid import uuid4
 import os
 
-from api import convert
+from tools.infer_to_replace import convert
 
 
 if not os.path.exists("raw-audio"):
@@ -32,8 +33,13 @@ def get_health():
 
 @app.post("/audios")
 async def post_audios(file: UploadFile):
-    saved_path = "./raw-audio/" + str(uuid4())
-    save_upload_file(file, Path(saved_path))
+    id = str(uuid4())
 
-    audio = convert(saved_path)
-    return Response(media_type="audio/wav", content=audio)
+    input_path = "./raw-audio/" + id
+    output_path = "./converted-audio/" + id
+
+    save_upload_file(file, Path(input_path))
+
+    convert(input_path, output_path)
+
+    return FileResponse(media_type="audio/wav", path=output_path)
