@@ -8,12 +8,10 @@ from scipy.io import wavfile
 from configs.config import Config
 from infer.modules.vc.modules import VC
 
-from assets import prepare_assets
 
 now_dir = os.getcwd()
 sys.path.append(now_dir)
 
-prepare_assets()
 
 ####
 # USAGE
