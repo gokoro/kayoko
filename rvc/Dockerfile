@@ -39,4 +39,4 @@ RUN ls -al /rvc
 RUN apt-get update -y \
   && apt-get install ffmpeg -y -qq 
 
-CMD [ "uvicorn", "preapi:app" ]
+CMD [ "uvicorn", "preapi:app", "--host", "0.0.0.0", "--port", "8000", ]
