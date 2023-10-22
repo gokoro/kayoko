@@ -13,8 +13,15 @@ import { create as createTasks } from './modules/tasks'
 const clusterName = 'kayoko-ecs-cluster'
 const keyName = 'kayoko_ed25519'
 
+const namespace = new aws.servicediscovery.HttpNamespace('kayoko-area', {
+  name: 'kayoko-area',
+})
+
 const cluster = new aws.ecs.Cluster('kayoko-ecs-cluster', {
   name: clusterName,
+  serviceConnectDefaults: {
+    namespace: namespace.arn,
+  },
   settings: [
     {
       name: 'containerInsights',
@@ -23,7 +30,7 @@ const cluster = new aws.ecs.Cluster('kayoko-ecs-cluster', {
   ],
 })
 
-const { vpc, subnets, defaultSecurityGroup } = createVpc()
+const { vpc, subnets } = createVpc()
 
 const { launchTemplate } = createTemplate({
   clusterName,
@@ -79,7 +86,22 @@ const clusterCapacityProviders = new aws.ecs.ClusterCapacityProviders(
 const service = new aws.ecs.Service(`kayoko-service`, {
   name: 'kayoko-service',
   cluster: cluster.id,
-  taskDefinition: task.taskDefinition.arn,
+  serviceConnectConfiguration: {
+    enabled: true,
+    namespace: namespace.arn,
+    services: [
+      {
+        portName: 'http',
+        discoveryName: 'rvc',
+        clientAlias: [
+          {
+            port: 5000,
+          },
+        ],
+      },
+    ],
+  },
+  taskDefinition: task.arn,
   desiredCount: 1,
   forceNewDeployment: true,
 })

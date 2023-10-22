@@ -10,6 +10,15 @@ const containers: Record<string, Container> = {
   client: {
     name: 'client',
     image: 'ghcr.io/gokoro/kayoko-client:latest',
+
+    portMappings: [
+      {
+        name: 'http',
+        containerPort: 3000,
+        hostPort: 3000,
+        appProtocol: 'http',
+      },
+    ],
     essential: true,
     mountPoints: [
       {
@@ -73,30 +82,89 @@ const volumes: Volume[] = [
   },
 ]
 
+const instanceAssumeRolePolicy = aws.iam.getPolicyDocument({
+  statements: [
+    {
+      actions: ['sts:AssumeRole'],
+      principals: [
+        {
+          type: 'Service',
+          identifiers: ['ecs-tasks.amazonaws.com'],
+        },
+      ],
+    },
+  ],
+})
+
 const pollyPolicy = aws.iam.getPolicy({
   name: 'AmazonPollyFullAccess',
 })
 
+const role = new aws.iam.Role('kayoko-task-role', {
+  assumeRolePolicy: instanceAssumeRolePolicy.then(
+    (instanceAssumeRolePolicy) => instanceAssumeRolePolicy.json
+  ),
+
+  inlinePolicies: [
+    {
+      name: pollyPolicy.then((p) => p.name),
+      policy: pollyPolicy.then((p) => p.policy),
+    },
+  ],
+})
+
 export function create() {
-  const defaultTask = new awsx.ecs.EC2TaskDefinition('kayoko-default-task', {
+  // const defaultTask = new awsx.ecs.EC2TaskDefinition('kayoko-default-task', {
+  //   // const defaultTask = new awsx.ecs.EC2TaskDefinition('kayoko-default-task', {
+  //   memory: '4096',
+  //   networkMode: 'bridge',
+
+  //   // networkMode: 'host',
+  //   // networkMode: 'awsvpc',
+
+  //   runtimePlatform: {
+  //     operatingSystemFamily: 'LINUX',
+  //     cpuArchitecture: 'X86_64',
+  //   },
+  //   taskRole: {
+  //     args: {
+  //       inlinePolicies: [
+  //         {
+  //           name: pollyPolicy.then((p) => p.name),
+  //           policy: pollyPolicy.then((p) => p.policy),
+  //         },
+  //       ],
+  //     },
+  //   },
+  //   containers,
+  //   volumes,
+  // })
+  const defaultTask = new aws.ecs.TaskDefinition('kayoko-default-task', {
+    family: 'kayoko-main',
+    // const defaultTask = new awsx.ecs.EC2TaskDefinition('kayoko-default-task', {
     memory: '4096',
     networkMode: 'bridge',
+
+    // networkMode: 'host',
+    // networkMode: 'awsvpc',
 
     runtimePlatform: {
       operatingSystemFamily: 'LINUX',
       cpuArchitecture: 'X86_64',
     },
-    taskRole: {
-      args: {
-        inlinePolicies: [
-          {
-            name: pollyPolicy.then((p) => p.name),
-            policy: pollyPolicy.then((p) => p.policy),
-          },
-        ],
-      },
-    },
-    containers,
+    taskRoleArn: role.arn,
+    // taskRole: {
+    //   args: {
+    //     inlinePolicies: [
+    //       {
+    //         name: pollyPolicy.then((p) => p.name),
+    //         policy: pollyPolicy.then((p) => p.policy),
+    //       },
+    //     ],
+    //   },
+    // },
+    // containers,
+    containerDefinitions: JSON.stringify(Object.values(containers)),
     volumes,
   })
 
