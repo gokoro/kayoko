@@ -2,7 +2,7 @@ name: Publish a Docker image and deploy
 
 on:
   push:
-    branches: ['main']
+    # branches: ['main']
 
 env:
   REGISTRY: ghcr.io
@@ -63,8 +63,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.package }}:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.package }}:buildcache,mode=max
+          # cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.package }}:buildcache
+          # cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.package }}:buildcache,mode=max
 
       - name: Set updated status
         id: isUpdated

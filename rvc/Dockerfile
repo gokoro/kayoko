@@ -3,7 +3,8 @@ FROM python:3.8.17 AS builder
 ENV PYTHONUNBUFFERED 1
 ENV PATH="/opt/venv/bin:$PATH"
 
-RUN apt-get update -y -qq
+RUN apt-get update -y -qq \
+  && apt-get install rsync -y
 
 COPY . /app
 
@@ -18,19 +19,22 @@ RUN wget https://raw.githubusercontent.com/RVC-Project/Retrieval-based-Voice-Con
 
 # Download sources and move needed models
 RUN rm -rf requirements.txt \
-  && git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git . --depth=1 \
-  && mv /app/* .
+  && git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git . \
+  && git checkout 318e8fd8cfecd9deb7bbeac9a17fcb72a8ecb360 \
+  && mv /app/* /rvc \
+  && mv infer_to_replace.py tools/
 
 
 FROM python:3.8.17-slim
 
 ENV PATH="/opt/venv/bin:$PATH"
 
+WORKDIR /rvc
 
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /rvc /rvc
 
-WORKDIR /rvc
+RUN ls -al /rvc
 
 RUN apt-get update -y \
   && apt-get install ffmpeg -y -qq 
