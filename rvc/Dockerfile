@@ -29,7 +29,7 @@ FROM python:3.8.17-slim
 
 ENV PATH="/opt/venv/bin:$PATH"
 
-# WORKDIR /rvc
+WORKDIR /rvc
 
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /rvc /rvc
