@@ -18,14 +18,14 @@ RUN wget https://raw.githubusercontent.com/RVC-Project/Retrieval-based-Voice-Con
 
 # Download sources and move needed models
 RUN rm -rf requirements.txt \
-  && git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git . --depth=1 \
+  && git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git . \
+  && git checkout aa37b92 \
   && mv /app/* .
 
 
 FROM python:3.8.17-slim
 
 ENV PATH="/opt/venv/bin:$PATH"
-
 
 WORKDIR /rvc
 
