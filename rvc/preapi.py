@@ -6,7 +6,7 @@ from pathlib import Path
 from uuid import uuid4
 import os
 
-from .tools.infer_to_replace import convert
+from tools.infer_to_replace import convert
 
 
 if not os.path.exists("raw-audio"):
