@@ -3,7 +3,8 @@ FROM python:3.8.17 AS builder
 ENV PYTHONUNBUFFERED 1
 ENV PATH="/opt/venv/bin:$PATH"
 
-RUN apt-get update -y -qq
+RUN apt-get update -y -qq \
+  && apt-get install rsync -y
 
 COPY . /app
 
@@ -20,7 +21,9 @@ RUN wget https://raw.githubusercontent.com/RVC-Project/Retrieval-based-Voice-Con
 RUN rm -rf requirements.txt \
   && git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git . \
   && git checkout 318e8fd8cfecd9deb7bbeac9a17fcb72a8ecb360 \
-  && mv /app/* . \
+  && ls -la /rvc \
+  && mv /app/* /rvc \
+  && ls -la /rvc \
   && mv infer_to_replace.py tools/
 
 
