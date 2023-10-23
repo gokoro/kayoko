@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: ['client', 'rvc']
+        package: ['client', 'rvc', 'sd']
 
     outputs:
       is-updated: ${{ steps.isUpdated.outputs.status }}
