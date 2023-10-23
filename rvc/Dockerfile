@@ -28,6 +28,7 @@ RUN python -m venv /opt/venv \
 FROM python:3.8.17-slim
 
 ENV PATH="/opt/venv/bin:$PATH"
+ENV weight_root=/rvc/assets/weights
 
 WORKDIR /rvc
 
