@@ -3,7 +3,9 @@
 # https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.7.1/ubuntu2204/devel/cudnn8/Dockerfile
 # FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
 # https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.7.1/ubuntu2204/base/Dockerfile
-FROM nvidia/cuda:11.7.1-base-ubuntu22.04
+# FROM nvidia/cuda:12.2.2-base-ubuntu22.04
+FROM python:3.8.17
+
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -y libgl1 libglib2.0-0 wget git git-lfs python3-pip python-is-python3 libcairo2-dev pkg-config python3-dev && rm -rf /var/lib/apt/lists/*
@@ -33,7 +35,7 @@ RUN sed -i -e '''/    prepare_environment()/a\    os.system\(f\"""sed -i -e ''\"
 RUN sed -i -e 's/fastapi==0.90.1/fastapi==0.89.1/g' /content/stable-diffusion-webui/requirements_versions.txt
 RUN sed -i -e 's/    start()/    #start()/g' /content/stable-diffusion-webui/launch.py
 RUN cd stable-diffusion-webui && python launch.py --skip-torch-cuda-test
-RUN pip install torchmetrics==0.11.4
+RUN pip install torchmetrics==0.11.4 torch==2.1
 
 ADD --chown=user https://huggingface.co/ckpt/sd15/resolve/main/v1-5-pruned-emaonly.ckpt /content/stable-diffusion-webui/models/Stable-diffusion/v1-5-pruned-emaonly.ckpt
 
