@@ -1,15 +1,10 @@
 import * as aws from '@pulumi/aws'
 
-import { create as createVpc } from './modules/vpc'
 import { create as createTemplate } from './modules/template'
-import { create as createTasks } from './modules/tasks/rvc'
-
 import { registerAll as registerServices } from './modules/services'
 
-const credentialProvider = new aws.Provider('key', {
-  accessKey: process.env.AWS_ACCESS_KEY_ID,
-  secretKey: process.env.AWS_SECRET_ACCESS_KEY,
-})
+import { vpc, subnets } from './modules/vpc'
+import { lb } from './modules/loadbalancer'
 
 // Specify name of cluster explicitly, due to the `output` type of Pulumi.
 // The name of cluster should be included in the Launch Template,
@@ -37,12 +32,11 @@ const cluster = new aws.ecs.Cluster('kayoko-ecs-cluster', {
   ],
 })
 
-const { vpc, subnets } = createVpc()
+const subnetIds = subnets.map((subnet) => subnet.id)
 
 const { launchTemplate } = createTemplate({
   clusterName,
   keyName,
-  securityGroupId: vpc.defaultSecurityGroupId,
 })
 
 // const [task] = createTasks()
@@ -90,6 +84,12 @@ const clusterCapacityProviders = new aws.ecs.ClusterCapacityProviders(
   }
 )
 
-registerServices({ clusterId: cluster.id, namespaceArn: namespace.arn })
+registerServices({
+  vpcId: vpc.id,
+  clusterId: cluster.id,
+  namespaceArn: namespace.arn,
+  // targetGroup: targetGroupHttp.arn,
+  subnets: subnetIds,
+})
 
 export { clusterName }

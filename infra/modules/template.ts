@@ -1,6 +1,9 @@
 import * as aws from '@pulumi/aws'
 import { Input, Output } from '@pulumi/pulumi'
 
+import { vpc } from './vpc'
+import { securityGroups } from './loadbalancer'
+
 // For activation of GPU for all containers by default
 // sed -i 's/\(OPTIONS="--default-ulimit nofile=[^"]*\)"/\1 --default-runtime nvidia"/' /etc/sysconfig/docker
 const SED = Buffer.from(
@@ -13,7 +16,7 @@ const ami = aws.ec2.getAmi({
   filters: [
     {
       name: 'name',
-      values: ['amzn2-ami-ecs-gpu-hvm-2.0.*-x86_64-ebs'],
+      values: ['amzn2-ami-ecs-gpu-hvm-2.*.*-x86_64-ebs'],
     },
     {
       name: 'virtualization-type',
@@ -60,26 +63,67 @@ const ecsInstanceProfile = new aws.iam.InstanceProfile(
   }
 )
 
+const securityGroupForContainerInstance = new aws.ec2.SecurityGroup(
+  'kayoko-security-group-container',
+  {
+    vpcId: vpc.id,
+    ingress: [
+      {
+        fromPort: 0,
+        toPort: 0,
+        protocol: '-1',
+        cidrBlocks: ['0.0.0.0/0'],
+        ipv6CidrBlocks: ['::/0'],
+        securityGroups: [securityGroups.id],
+      },
+    ],
+    egress: [
+      {
+        fromPort: 0,
+        toPort: 0,
+        protocol: '-1',
+        cidrBlocks: ['0.0.0.0/0'],
+        ipv6CidrBlocks: ['::/0'],
+      },
+    ],
+  }
+)
+
 export function create({
   clusterName,
   keyName,
-  securityGroupId,
 }: {
   clusterName: string
   keyName: Input<string>
-  securityGroupId: Output<string>
 }) {
+  // const rawUserData = `
+  //   #!/bin/bash
+  //   echo "ECS_CLUSTER=${clusterName}" >> /etc/ecs/ecs.config
+  //   echo "ECS_ENGINE_TASK_CLEANUP_WAIT_DURATION=10m" >> /etc/ecs/ecs.config
+  //   echo "ECS_IMAGE_CLEANUP_INTERVAL=10m" >> /etc/ecs/ecs.config
+  //   (grep -q ^OPTIONS=\"--default-runtime /etc/sysconfig/docker && echo '/etc/sysconfig/docker needs no changes') || (sed -i 's/^OPTIONS="/OPTIONS="--default-runtime nvidia /' /etc/sysconfig/docker && echo '/etc/sysconfig/docker updated to have nvidia runtime as default' && systemctl restart docker && echo 'Restarted docker')
+  // `
   const rawUserData = `
     #!/bin/bash
     echo "ECS_CLUSTER=${clusterName}" >> /etc/ecs/ecs.config
+    echo "ECS_ENGINE_TASK_CLEANUP_WAIT_DURATION=10m" >> /etc/ecs/ecs.config
+    echo "ECS_IMAGE_CLEANUP_INTERVAL=10m" >> /etc/ecs/ecs.config
   `
   const userData = Buffer.from(rawUserData + SED, 'utf-8').toString('base64')
 
   const launchTemplate = new aws.ec2.LaunchTemplate('kayoko-launch-template', {
     imageId: ami.then((image) => image.id),
-    vpcSecurityGroupIds: [securityGroupId],
+    vpcSecurityGroupIds: [securityGroupForContainerInstance.id],
     keyName,
     userData,
+    blockDeviceMappings: [
+      {
+        deviceName: '/dev/xvda',
+        ebs: {
+          volumeSize: 80,
+        },
+      },
+    ],
     iamInstanceProfile: {
       arn: ecsInstanceProfile.arn,
     },
