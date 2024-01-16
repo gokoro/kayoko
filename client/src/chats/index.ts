@@ -5,6 +5,7 @@ import type { RegisterModule, RegisterModuleReturnedContext } from './types.js'
 
 import { config } from '../configs/index.js'
 import { voices } from './voices/index.js'
+import { proxys } from './proxys/index.js'
 
 function handleContext(
   bot: ClientType,
@@ -31,12 +32,17 @@ function handleContext(
 
     interaction?.handler(createdInt)
   })
+
+  bot.on('messageCreate', (message) =>
+    context.messageCreation?.forEach(({ handler }) => handler(bot, message))
+  )
 }
 
 export const register: RegisterModule = (bot) => {
   const voiceContext = voices(bot)
+  const proxyContext = proxys(bot)
 
-  const contexts = [voiceContext]
+  const contexts = [voiceContext, proxyContext]
 
   bot.once('ready', () => {
     contexts.forEach((ctx) => ctx && handleContext(bot, ctx))

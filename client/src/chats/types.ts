@@ -2,6 +2,8 @@ import type {
   ApplicationCommandStructure,
   CommandInteraction,
   TextableChannel,
+  PossiblyUncachedTextableChannel,
+  Message,
 } from 'eris'
 
 import type { ClientType } from '../libs/eris.js'
@@ -19,7 +21,17 @@ export interface Interaction {
   name: string
 }
 
+// ???
+export type MessageCreationHandler<
+  T extends PossiblyUncachedTextableChannel = PossiblyUncachedTextableChannel
+> = (bot: ClientType, message: Message<T>) => Promise<void> | void
+
+export interface MessageCreation {
+  handler: MessageCreationHandler
+}
+
 export interface RegisterModuleReturnedContext {
   commandInteractions?: Interaction[]
   guildCommands?: ApplicationCommandStructure[]
+  messageCreation?: MessageCreation[]
 }

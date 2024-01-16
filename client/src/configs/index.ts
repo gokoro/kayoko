@@ -18,6 +18,7 @@ export const config = {
   IS_AWS: getBool('IS_LOCAL_TEST', process.env.IS_LOCAL_TEST ?? 'false'),
   VOICE_OUTPUT_PATH: process.env.VOICE_OUTPUT_PATH ?? './output',
   RVC_URL: process.env.RVC_URL as string,
+  ARCA_PROXY_URL: process.env.ARCA_PROXY_URL ?? '',
 }
 
 Object.entries(config).forEach(([key, value]) => {
