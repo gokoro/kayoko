@@ -1,11 +1,13 @@
-import { config } from '../../configs/index.js'
-
 import type { MessageCreationHandler } from '../types.js'
 
+import { config } from '../../configs/index.js'
+
+const origin = 'https://arca.live'
+
 export const ArcaHandler: MessageCreationHandler = (bot, message) => {
-  if (message.content.startsWith('https://arca.live')) {
-    const target = message.content.split('?')[0]
-    const content = `${message.author.mention} - ${config.ARCA_PROXY_URL}/proxy?proxyUrl=${target}`
+  if (message.content.startsWith(origin)) {
+    const target = message.content.replace(origin, '')
+    const content = `${message.author.mention} - ${config.ARCA_PROXY_URL}${target}`
 
     bot.createMessage(message.channel.id, {
       content,
