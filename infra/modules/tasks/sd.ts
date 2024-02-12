@@ -7,7 +7,7 @@ import type * as Type from './types'
 const containers: Record<string, Type.Container> = {
   sd: {
     name: 'sd',
-    image: 'ghcr.io/thirdscam/sd-webui-docker-a1111:latest',
+    image: 'ghcr.io/thirdscam/sd-webui-docker-a1111:v1.3.0',
     essential: true,
     portMappings: [
       {

@@ -15,3 +15,5 @@ export const CLIENT_DISCORD_DEFAULT_GUILD_ID = config.require(
 )
 
 export const SD_ZONEID = config.require('sd-zoneId')
+
+export const TAILSCALE_AUTH_KEY = config.getSecret('TAILSCALE_AUTH_KEY')

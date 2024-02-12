@@ -72,8 +72,7 @@ const securityGroupForContainerInstance = new aws.ec2.SecurityGroup(
         fromPort: 0,
         toPort: 0,
         protocol: '-1',
-        cidrBlocks: ['0.0.0.0/0'],
-        ipv6CidrBlocks: ['::/0'],
+        cidrBlocks: [vpc.cidrBlock],
         securityGroups: [securityGroups.id],
       },
     ],
@@ -113,9 +112,16 @@ export function create({
 
   const launchTemplate = new aws.ec2.LaunchTemplate('kayoko-launch-template', {
     imageId: ami.then((image) => image.id),
-    vpcSecurityGroupIds: [securityGroupForContainerInstance.id],
+    // vpcSecurityGroupIds: [securityGroupForContainerInstance.id],
     keyName,
     userData,
+
+    networkInterfaces: [
+      {
+        associatePublicIpAddress: 'true',
+        securityGroups: [securityGroupForContainerInstance.id],
+      },
+    ],
     blockDeviceMappings: [
       {
         deviceName: '/dev/xvda',

@@ -16,7 +16,6 @@ export const subnets: aws.ec2.Subnet[] = AZ.map(
       vpcId: vpc.id,
       cidrBlock: cidr[i],
       availabilityZone: `${REGION}${az}`,
-      mapPublicIpOnLaunch: true,
     })
 )
 

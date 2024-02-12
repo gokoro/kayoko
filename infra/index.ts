@@ -6,6 +6,8 @@ import { registerAll as registerServices } from './modules/services'
 import { vpc, subnets } from './modules/vpc'
 import { lb } from './modules/loadbalancer'
 
+import './modules/tailscale'
+
 // Specify name of cluster explicitly, due to the `output` type of Pulumi.
 // The name of cluster should be included in the Launch Template,
 // for EC2 instance to discover the proper cluster.
