@@ -10,6 +10,7 @@ export function register(args: Args) {
   const service = new aws.ecs.Service(`kayoko-service-rvc`, {
     name: 'kayoko-rvc',
     cluster: args.clusterId,
+
     serviceConnectConfiguration: {
       enabled: true,
       namespace: args.namespaceArn,

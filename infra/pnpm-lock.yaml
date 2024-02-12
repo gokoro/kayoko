@@ -11,6 +11,9 @@ dependencies:
   '@pulumi/awsx':
     specifier: ^2.0.2
     version: 2.0.2
+  '@pulumi/cloudflare':
+    specifier: ^5.13.1
+    version: 5.13.1
   '@pulumi/pulumi':
     specifier: ^3.89.0
     version: 3.89.0
@@ -693,6 +696,14 @@ packages:
       mime: 2.6.0
     transitivePeerDependencies:
       - aws-crt
+      - supports-color
+    dev: false
+
+  /@pulumi/cloudflare@5.13.1:
+    resolution: {integrity: sha512-8Sk5N1sYe1QXhhi/uYU1/YD1PdeOGceyV9ssm1LTK4Ebf+aazlukMcBBl8OFM4RY5H/E311J96KE3uq49M1hQw==}
+    dependencies:
+      '@pulumi/pulumi': 3.89.0
+    transitivePeerDependencies:
       - supports-color
     dev: false
 

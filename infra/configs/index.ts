@@ -13,3 +13,5 @@ export const CLIENT_DISCORD_BOT_TOKEN = config.require(
 export const CLIENT_DISCORD_DEFAULT_GUILD_ID = config.require(
   'client-discord-default-guild-id'
 )
+
+export const SD_ZONEID = config.require('sd-zoneId')

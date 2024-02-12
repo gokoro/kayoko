@@ -1,6 +1,6 @@
 import type { ApplicationCommandStructure } from 'eris'
 
-import type { ClientType } from '../libs/eris'
+import type { ClientType } from '../libs/eris.js'
 
 import { config } from '../configs/index.js'
 

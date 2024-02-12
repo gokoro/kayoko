@@ -2,8 +2,9 @@ import type { VoiceConnection } from 'eris'
 import type { ReadableStream } from 'node:stream/web'
 
 import { Constants } from 'eris'
+import { FormData } from 'formdata-node'
 import * as fs from 'fs/promises'
-import * as got from 'got'
+import got from 'got'
 import { Readable } from 'node:stream'
 
 import type { InteractionHandler } from '../types.js'
@@ -26,9 +27,15 @@ async function watchDirectory(path: string) {
   }
 }
 
-async function getConvertedVoice() {
+async function getConvertedVoice(blob: Blob) {
   const url = `${config.RVC_URL}/audios`
-  const response = await got.post(config.RVC_URL)
+
+  const form = new FormData()
+  form.append('file', blob)
+
+  const response = await got.post(url, { body: form }).buffer()
+
+  return response
 }
 
 export const SayHandler: InteractionHandler = async (interaction) => {
@@ -60,20 +67,22 @@ export const SayHandler: InteractionHandler = async (interaction) => {
   //   })
   // )
 
-  const stream = await createVoice({
+  const byteArray = await createVoice({
     Text: message,
-  }).then(({ AudioStream }) => AudioStream?.transformToWebStream())
+  }).then(({ AudioStream }) => AudioStream?.transformToByteArray())
+  console.log('stream:', byteArray)
 
-  if (!stream) {
+  if (!byteArray) {
     throw new Error('Got an error while fetching converted voice stream')
   }
-
-  const nodeStream = Readable.fromWeb(stream as ReadableStream)
+  const blob = new Blob([byteArray.buffer])
+  const converted = await getConvertedVoice(blob)
+  const stream = Readable.from(converted)
 
   // const converted = await watchDirectory(path)
   // const convertedFile = `${path}/${converted}`
 
-  connection?.play(nodeStream || file)
+  connection?.play(stream || file)
 
   interaction.createMessage(`말하고 있어!`)
 }

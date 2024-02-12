@@ -31,6 +31,10 @@ def prepare_assets():
     else:
         print(f"{hubert_file} already exists. Skipping download.")
 
+    # Move hubert_base.pt to assets/hubert
+    print(f"Moving {hubert_file} to assets/hubert...")
+    move_file_to_directory(hubert_file, "assets/hubert")
+
     # Download and unzip kokomi-kr.zip
     kokomi_file = "kokomi-kr.zip"
     print(f"Downloading {kokomi_file}...")
