@@ -52,7 +52,7 @@ const cloudInit = pulumi
 const tailscale = new aws.ec2.Instance('tailscale', {
   ami: ubuntu.then((ubuntu) => ubuntu.id),
   instanceType: 't3.small',
-  subnetId: subnets[0].id,
+  subnetId: subnets[1].id,
   vpcSecurityGroupIds: [allowVpcSecurityGroup.id],
   userData: cloudInit,
   userDataReplaceOnChange: true,
