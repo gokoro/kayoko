@@ -2,7 +2,6 @@ import * as aws from '@pulumi/aws'
 import { Input, Output } from '@pulumi/pulumi'
 
 import { vpc } from './vpc'
-import { securityGroups } from './loadbalancer'
 
 // For activation of GPU for all containers by default
 // sed -i 's/\(OPTIONS="--default-ulimit nofile=[^"]*\)"/\1 --default-runtime nvidia"/' /etc/sysconfig/docker
@@ -73,7 +72,6 @@ const securityGroupForContainerInstance = new aws.ec2.SecurityGroup(
         toPort: 0,
         protocol: '-1',
         cidrBlocks: [vpc.cidrBlock],
-        securityGroups: [securityGroups.id],
       },
     ],
     egress: [

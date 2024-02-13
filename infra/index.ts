@@ -4,7 +4,6 @@ import { create as createTemplate } from './modules/template'
 import { registerAll as registerServices } from './modules/services'
 
 import { vpc, subnets } from './modules/vpc'
-import { lb } from './modules/loadbalancer'
 
 import './modules/tailscale'
 
