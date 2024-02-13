@@ -7,13 +7,15 @@ import type * as Type from './types'
 const containers: Record<string, Type.Container> = {
   sd: {
     name: 'sd',
-    image: 'ghcr.io/thirdscam/sd-webui-docker-a1111:v1.3.0',
+    // image: 'ghcr.io/thirdscam/sd-webui-docker-a1111:v1.3.0',
+    image: '798545013573.dkr.ecr.ap-northeast-2.amazonaws.com/kayoko-sd:latest',
     essential: true,
     portMappings: [
       {
         name: 'http',
         containerPort: 7890,
-        hostPort: 0,
+        // hostPort: 0,
+        hostPort: 7890,
         appProtocol: 'http',
       },
     ],
@@ -26,10 +28,6 @@ const containers: Record<string, Type.Container> = {
         containerPath: '/output',
         sourceVolume: 'output',
       },
-      {
-        containerPath: '/apt/models',
-        sourceVolume: 'models',
-      },
     ],
     resourceRequirements: [
       {
@@ -41,7 +39,7 @@ const containers: Record<string, Type.Container> = {
       {
         name: 'COMMANDLINE_ARGS',
         value:
-          '--listen --port 7890 --enable-insecure-extension-access --api --theme=dark --no-half-vae --opt-sdp-no-mem-attention',
+          '--allow-code --xformers --enable-insecure-extension-access --api',
       },
       {
         name: 'NVIDIA_DRIVER_CAPABILITIES',
@@ -68,17 +66,14 @@ const volumes: Type.Volume[] = [
     name: 'output',
     hostPath: '/sd/output',
   },
-  {
-    name: 'models',
-    hostPath: '/sd/models',
-  },
 ]
 
 export function create() {
   const defaultTask = new aws.ecs.TaskDefinition('kayoko-task-sd', {
     family: 'kayoko-sd',
-    memory: '6144',
-    networkMode: 'bridge',
+    memory: `${1024 * 10}`,
+    // networkMode: 'bridge',
+    networkMode: 'awsvpc',
 
     runtimePlatform: {
       operatingSystemFamily: 'LINUX',
