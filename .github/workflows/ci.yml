@@ -22,6 +22,7 @@ jobs:
 
     outputs:
       is-updated: ${{ steps.isUpdated.outputs.status }}
+      image_tag: ${{ steps.meta.outputs.tags }}-${{ github.run_number }}
 
     steps:
       - name: Checkout repository
@@ -56,12 +57,13 @@ jobs:
           tags: type=sha
 
       - name: Build and push Docker image
+        id: build
         uses: docker/build-push-action@v4
         if: steps.git-diff.outputs.diff
         with:
           context: '{{defaultContext}}:${{ matrix.package }}'
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}-${{ github.run_number }}
           labels: ${{ steps.meta.outputs.labels }}
           # cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.package }}:buildcache
           # cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.package }}:buildcache,mode=max
@@ -70,6 +72,31 @@ jobs:
         id: isUpdated
         if: steps.git-diff.outputs.diff
         run: echo "status=true" >> "$GITHUB_OUTPUT"
+
+  update-config-repo:
+    name: Update Config Repo
+    runs-on: ubuntu-latest
+    needs: build-and-push-image
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'gokoro/kayoko-configs'
+
+      - name: Change value in menifest file
+        run: |
+          FILE="kustomize/overlays/prod/deployment.yaml"
+          REGEX="ghcr\.io\/gokoro\/kayoko-client:(.+)"
+
+          sed -i.bak -E "s|$REGEX|ghcr.io/gokoro/kayoko-client:${{ needs.build-and-push-image.outputs.image_tag }}|g" $FILE
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'Update image tag to ${{ needs.build-and-push-image.outputs.image_tag }}'
+          file_pattern: 'kustomize/overlays/prod/deployment.yaml'
 
   ecs-push:
     name: Update ECS Service
