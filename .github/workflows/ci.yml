@@ -89,6 +89,7 @@ jobs:
 
       - name: Change value in menifest file
         run: |
+          ls
           FILE="kustomize/overlays/prod/deployment.yaml"
           REGEX="ghcr\.io\/gokoro\/kayoko-client:(.+)"
 
