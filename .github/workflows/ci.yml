@@ -22,7 +22,7 @@ jobs:
 
     outputs:
       is-updated: ${{ steps.isUpdated.outputs.status }}
-      image_tag: ${{ steps.meta.outputs.tags }}-${{ github.run_number }}
+      image_tag: ${{ steps.image_tag_set.outputs.image_tag }}
 
     steps:
       - name: Checkout repository
@@ -73,6 +73,10 @@ jobs:
         if: steps.git-diff.outputs.diff
         run: echo "status=true" >> "$GITHUB_OUTPUT"
 
+      - name: Set image tag
+        id: image_tag_set
+        run: echo "image_tag=${{ steps.meta.outputs.tags }}-${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
   update-config-repo:
     name: Update Config Repo
     runs-on: ubuntu-latest
@@ -89,7 +93,6 @@ jobs:
 
       - name: Change value in menifest file
         run: |
-          ls
           FILE="kustomize/overlays/prod/deployment.yaml"
           REGEX="ghcr\.io\/gokoro\/kayoko-client:(.+)"
 
