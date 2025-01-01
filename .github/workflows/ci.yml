@@ -96,11 +96,11 @@ jobs:
           FILE="kustomize/overlays/prod/deployment.yaml"
           REGEX="ghcr\.io\/gokoro\/kayoko-client:(.+)"
 
-          sed -i.bak -E "s|$REGEX|ghcr.io/gokoro/kayoko-client:${{ needs.build-and-push-image.outputs.image_tag }}|g" $FILE
+          sed -i.bak -E "s|$REGEX|ghcr.io/gokoro/kayoko-client:${{ needs.build-and-push-image.outputs.image_tag || 'latest' }}|g" $FILE
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'Update image tag to ${{ needs.build-and-push-image.outputs.image_tag }}'
+          commit_message: "Update image tag to ${{ needs.build-and-push-image.outputs.image_tag || 'latest'}}"
           file_pattern: 'kustomize/overlays/prod/deployment.yaml'
 
   ecs-push:
