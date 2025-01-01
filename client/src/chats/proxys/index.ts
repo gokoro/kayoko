@@ -1,7 +1,7 @@
 import { Constants } from 'eris'
 
-import type { RegisterModule, RegisterModuleReturnedContext } from '../types.js'
 import type { ClientType } from '../../libs/eris.js'
+import type { RegisterModule, RegisterModuleReturnedContext } from '../types.js'
 
 import { ArcaHandler } from './handlers.js'
 

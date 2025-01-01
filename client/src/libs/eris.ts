@@ -4,11 +4,6 @@ import { config } from '../configs/index.js'
 
 const token = config.DISCORD_BOT_TOKEN
 
-if (!token)
-  throw new Error(
-    `Token of Discord isn't set. Make sure your environment variable is valid.`
-  )
-
 const ClientClass = Client
 
 export type ClientType = InstanceType<typeof ClientClass>
@@ -18,7 +13,7 @@ export class ClientInstance {
 
   constructor() {
     this.client = new ClientClass(token, {
-      intents: ['guildMessages', 'guilds'],
+      intents: ['guildMessages', 'guilds', 'messageContent'],
     })
   }
 
