@@ -75,7 +75,7 @@ jobs:
 
       - name: Set image tag
         id: image_tag_set
-        run: echo "image_tag=${{ steps.meta.outputs.tags }}-${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+        run: echo "image_tag=${{ steps.meta.outputs.tags }}" >> "$GITHUB_OUTPUT"
 
   update-config-repo:
     name: Update Config Repo
