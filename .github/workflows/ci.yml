@@ -34,6 +34,7 @@ jobs:
         with:
           PATTERNS: |
             ${{ matrix.package }}/**/*
+          FILES: .github/workflows/ci.yml
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -75,7 +76,8 @@ jobs:
 
       - name: Set image tag
         id: image_tag_set
-        run: echo "image_tag=${{ steps.meta.outputs.tags }}" >> "$GITHUB_OUTPUT"
+        if: steps.git-diff.outputs.diff
+        run: 'echo image_tag=${{ steps.meta.outputs.tags }} >> $GITHUB_OUTPUT'
 
   update-config-repo:
     name: Update Config Repo
