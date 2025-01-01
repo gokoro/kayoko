@@ -54,7 +54,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.package }}
           flavor: latest=true
-          tags: type=sha
+          tags: type=raw,value=${{ github.sha }}-${{ github.run_number }}
 
       - name: Build and push Docker image
         id: build
@@ -63,7 +63,7 @@ jobs:
         with:
           context: '{{defaultContext}}:${{ matrix.package }}'
           push: true
-          tags: ${{ steps.meta.outputs.tags }}-${{ github.run_number }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.package }}:buildcache
           # cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.package }}:buildcache,mode=max
