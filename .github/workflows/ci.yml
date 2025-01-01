@@ -86,11 +86,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      # - name: Checkout repository
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: 'gokoro/kayoko-configs'
-      #     token: ${{ secrets.PAT }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'gokoro/kayoko-configs'
+          token: ${{ secrets.PAT }}
 
       - name: Change value in menifest file
         uses: fjogeleit/yaml-update-action@main
