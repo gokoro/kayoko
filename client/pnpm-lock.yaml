@@ -15,8 +15,8 @@ importers:
         specifier: ^3.405.0
         version: 3.405.0
       eris:
-        specifier: ^0.17.2
-        version: 0.17.2
+        specifier: ^0.18.0
+        version: 0.18.0
       formdata-node:
         specifier: ^5.0.1
         version: 5.0.1
@@ -874,8 +874,8 @@ packages:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
 
-  eris@0.17.2:
-    resolution: {integrity: sha512-OzffDSL81VooFXfRn56ienSg7J6fagoN8WdkmCHjn0B9a4jUA3bVouMztQiaXT54jHV5jaX9D0mJ/b9/0mFoVg==}
+  eris@0.18.0:
+    resolution: {integrity: sha512-zv2hjAfs4SYjR/EHUwBGNoKClctbqki1jPMed4SiQ4KKfafV1MIBLqKodQSGDgT9qkSUI5+MQ4EQW/8MkbAPkg==}
     engines: {node: '>=10.4.0'}
 
   esbuild@0.17.19:
@@ -2823,7 +2823,7 @@ snapshots:
     dependencies:
       esutils: 2.0.3
 
-  eris@0.17.2:
+  eris@0.18.0:
     dependencies:
       ws: 8.13.0
     optionalDependencies:

@@ -10,7 +10,7 @@
   "dependencies": {
     "@aws-sdk/client-polly": "^3.395.0",
     "@aws-sdk/credential-providers": "^3.405.0",
-    "eris": "^0.17.2",
+    "eris": "^0.18.0",
     "formdata-node": "^5.0.1",
     "got": "^13.0.0",
     "pino": "^8.15.0",

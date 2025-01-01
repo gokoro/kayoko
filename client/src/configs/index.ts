@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 const envSchema = z.object({
+  APP_VERSION: z.string().default('unknown'),
   AWS_ACCESS_KEY_ID: z.string().default('123'),
   AWS_SECRET_ACCESS_KEY: z.string().default(''),
   IS_LOCAL_TEST: z
@@ -22,6 +23,7 @@ const envSchema = z.object({
 const parsedEnv = envSchema.parse(process.env)
 
 export const config = {
+  APP_VERSION: parsedEnv.APP_VERSION,
   AWS_ACCESS_KEY_ID: parsedEnv.AWS_ACCESS_KEY_ID,
   AWS_SECRET_ACCESS_KEY: parsedEnv.AWS_SECRET_ACCESS_KEY,
   IS_LOCAL_TEST: parsedEnv.IS_LOCAL_TEST,

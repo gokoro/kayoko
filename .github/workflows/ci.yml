@@ -83,7 +83,6 @@ jobs:
     needs: build-and-push-image
     permissions:
       contents: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -92,11 +91,11 @@ jobs:
           token: ${{ secrets.PAT }}
 
       - name: Change value in menifest file
-        run: |
-          FILE="kustomize/overlays/prod/deployment.yaml"
-          REGEX="ghcr\.io\/gokoro\/kayoko-client:(.+)"
-
-          sed -i.bak -E "s|$REGEX|ghcr.io/gokoro/kayoko-client:${{ needs.build-and-push-image.outputs.image_tag || 'latest' }}|g" $FILE
+        uses: fjogeleit/yaml-update-action@main
+        with:
+          valueFile: 'kustomize/overlays/prod/kustomization.yaml'
+          propertyPath: 'images.0.newTag'
+          value: ${{ needs.build-and-push-image.outputs.image_tag || 'latest' }}
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
