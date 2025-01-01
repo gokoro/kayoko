@@ -111,7 +111,10 @@ jobs:
     name: Update ECS Service
     runs-on: ubuntu-latest
     needs: build-and-push-image
-    if: needs.build-and-push-image.outputs.is-updated == 'true'
+
+    # DISABLED
+    if: false
+    # if: needs.build-and-push-image.outputs.is-updated == 'true'
 
     env:
       AWS_ROLE: ${{ secrets.AWS_ROLE_ARN }}
