@@ -86,11 +86,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          repository: 'gokoro/kayoko-configs'
-          token: ${{ secrets.PAT }}
+      # - name: Checkout repository
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: 'gokoro/kayoko-configs'
+      #     token: ${{ secrets.PAT }}
 
       - name: Change value in menifest file
         uses: fjogeleit/yaml-update-action@main
@@ -98,11 +98,14 @@ jobs:
           valueFile: 'kustomize/overlays/prod/kustomization.yaml'
           propertyPath: 'images.0.newTag'
           value: ${{ needs.build-and-push-image.outputs.image_tag || 'latest' }}
+          repository: 'gokoro/kayoko-configs'
+          message: "Update image tag to ${{ needs.build-and-push-image.outputs.image_tag || 'latest'}}"
+          token: ${{ secrets.PAT }}
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Update image tag to ${{ needs.build-and-push-image.outputs.image_tag || 'latest'}}"
-          file_pattern: 'kustomize/overlays/prod/deployment.yaml'
+      # - uses: stefanzweifel/git-auto-commit-action@v5
+      #   with:
+      #     commit_message: "Update image tag to ${{ needs.build-and-push-image.outputs.image_tag || 'latest'}}"
+      #     file_pattern: 'kustomize/overlays/prod/deployment.yaml'
 
   ecs-push:
     name: Update ECS Service
