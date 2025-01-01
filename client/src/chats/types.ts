@@ -1,5 +1,5 @@
 import type {
-  ApplicationCommandStructure,
+  ApplicationCommandCreateOptions,
   CommandInteraction,
   Message,
   PossiblyUncachedTextableChannel,
@@ -29,6 +29,6 @@ export interface MessageCreation {
 
 export interface RegisterModuleReturnedContext {
   commandInteractions?: Interaction[]
-  guildCommands?: ApplicationCommandStructure[]
+  guildCommands?: ApplicationCommandCreateOptions<boolean>[]
   messageCreation?: MessageCreation[]
 }
