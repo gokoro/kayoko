@@ -10,10 +10,6 @@ import { voices } from './voices/index.js'
 async function handleContext(bot: ClientType, context: RegisterModuleReturnedContext): Promise<void> {
   if (!bot.ready) return
 
-  /*
-   * Handle Guild Commands
-   */
-
   if (context.guildCommands) {
     const existingCommands = await bot.getCommands()
 
@@ -32,9 +28,6 @@ async function handleContext(bot: ClientType, context: RegisterModuleReturnedCon
     }
   }
 
-  /*
-   * ...And their interactions
-   */
   bot.on('interactionCreate', (createdInt) => {
     if (!(createdInt instanceof CommandInteraction)) return
 
