@@ -1,3 +1,5 @@
+import { URL } from 'node:url'
+
 import type { MessageCreationHandler } from '../types.js'
 
 import { config } from '../../configs/index.js'
@@ -24,6 +26,11 @@ export const InstagramHandler: MessageCreationHandler = (bot, message) => {
   const origin = 'https://www.instagram.com'
 
   if (message.content.startsWith(origin) && !message.content.includes('/share/')) {
+    const url = new URL(message.content)
+    const [, ...paths] = url.pathname.split('/')
+
+    if (paths.length <= 1) return
+
     const target = message.content.replace(origin, 'https://www.ddinstagram.com')
     const content = `${message.author.mention} - ${target}`
 
