@@ -27,7 +27,7 @@ export const InstagramHandler: MessageCreationHandler = (bot, message) => {
 
   if (message.content.startsWith(origin) && !message.content.includes('/share/')) {
     const url = new URL(message.content)
-    const [, ...paths] = url.pathname.split('/')
+    const [, ...paths] = url.pathname.replace(/\/$/, '').split('/')
 
     if (paths.length <= 1) return
 
