@@ -1,3 +1,5 @@
+import { AdvancedMessageContent, Message, MessageContent } from 'eris'
+
 import { config } from '../../configs/index.js'
 
 // Only filters profile routes;
@@ -30,10 +32,21 @@ function isRouteToProfile(url: string) {
   return true
 }
 
-const targets = ['Arca', 'Instagram'] as const
+function createEmojiCombiningUrl(ids: string[]): URL {
+  const base = 'https://combining-image-worker.croe.io'
+  const url = new URL(base)
+  const params = url.searchParams
 
-type Determiner = (message: string) => boolean
-type Substituter = (message: string) => { message: string }
+  params.set('auto', 'true')
+  ids.forEach((id, i) => params.set(`image_${i}`, `https://cdn.discordapp.com/emojis/${id}.jpg`))
+
+  return url
+}
+
+const targets = ['Arca', 'Instagram', 'Emoji'] as const
+
+export type Determiner = (message: string) => boolean
+export type Substituter = (message: string) => Partial<AdvancedMessageContent>
 
 type Determiners = {
   [K in (typeof targets)[number]]: Determiner
@@ -43,6 +56,8 @@ type Substituters = {
   [K in (typeof targets)[number]]: Substituter
 }
 
+const matchWithEmoji = (m: string) => m.match(/<:[a-zA-Z0-9_]+:[0-9]+>/g)
+
 const determinerOfArca: Determiner = (message) => {
   return message.includes('https://arca.live')
 }
@@ -51,20 +66,62 @@ const determinerOfInstagram: Determiner = (message) => {
   return message.includes('https://www.instagram.com') && !message.includes('/share/') && !isRouteToProfile(message)
 }
 
+const determinerOfEmoji: Determiner = (message) => {
+  const EMOJIS_THRESHOLD = 2
+  const matched = matchWithEmoji(message)
+
+  return matched !== null && matched.length >= EMOJIS_THRESHOLD
+}
+
 const substituterOfArca: Substituter = (message) => {
-  return { message: message.replace('https://arca.live', config.ARCA_PROXY_URL) }
+  return { content: message.replace('https://arca.live', config.ARCA_PROXY_URL) }
 }
 
 const substituterOfInstagram: Substituter = (message) => {
-  return { message: message.replace('instagram.com', 'ddinstagram.com') }
+  return { content: message.replace('instagram.com', 'ddinstagram.com') }
+}
+
+const substituterOfEmoji: Substituter = (message) => {
+  //<:a_:1330933829304713308>
+  const matches = []
+
+  for (let i = 0, l = message.length, paren = false, colon = 0; i < l; i++) {
+    let char = message[i]
+
+    if (!paren && char === '<') {
+      paren = true
+      continue
+    }
+
+    if (char === ':') {
+      colon++
+    }
+
+    if (colon < 2) {
+      continue
+    }
+
+    let end = message.indexOf('>', i)
+    matches.push(message.slice(i + 1, end))
+
+    i = end
+    paren = false
+    colon = 0
+  }
+
+  const url = createEmojiCombiningUrl(matches)
+
+  return { embeds: [{ image: { url: url.toString() } }] }
 }
 
 export const determiners: Determiners = {
   Arca: determinerOfArca,
   Instagram: determinerOfInstagram,
+  Emoji: determinerOfEmoji,
 }
 
 export const substituters: Substituters = {
   Arca: substituterOfArca,
   Instagram: substituterOfInstagram,
+  Emoji: substituterOfEmoji,
 }

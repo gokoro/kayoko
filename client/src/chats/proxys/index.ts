@@ -2,6 +2,7 @@ import Eris, { Message, PossiblyUncachedTextableChannel } from 'eris'
 
 import type { ClientType } from '../../libs/eris.js'
 import type { MessageCreationHandler, RegisterModule, RegisterModuleReturnedContext } from '../types.js'
+import type { Determiner, Substituter } from './handlers.js'
 
 import { determiners, substituters } from './handlers.js'
 
@@ -19,7 +20,7 @@ interface MessageMenifestForSubstitution {
 }
 
 const createDeterminerPipe = (
-  determiner: (message: string) => boolean
+  determiner: Determiner
 ): ((message: PrimaryMessage) => MessageMenifestForSubstitution) => {
   return (message) => {
     const menifest: MessageMenifestForSubstitution = { type: 'normal', substitution: true }
@@ -53,19 +54,31 @@ const createDeterminerPipe = (
 
 const createSubstituterPipe = (
   bot: ClientType,
-  substituter: (message: string) => { message: string }
+  substituter: Substituter
 ): ((message: PrimaryMessage, menifest: MessageMenifestForSubstitution) => void) => {
   return (message, menifest) => {
     const substituted = substituter(message.content)
 
-    const callerIndicatedMessage = `${message.author.mention} - ${substituted.message}`
+    if (substituted.content) {
+      substituted.content = `${message.author.mention} - ${substituted.content}`
+    }
+
+    if (substituted.embeds) {
+      for (const embed of substituted.embeds) {
+        embed.author = {
+          name: message.author.globalName ?? message.author.username,
+          icon_url: message.author.avatarURL,
+        }
+      }
+    }
 
     if (menifest.type == 'mention') {
+      // Do Nothing for the moment
     }
 
     if (menifest.type == 'reply' && menifest.reply) {
       bot.createMessage(message.channel.id, {
-        content: callerIndicatedMessage,
+        ...substituted,
         messageReference: {
           messageID: menifest.reply.message.id,
         },
@@ -77,7 +90,7 @@ const createSubstituterPipe = (
 
     if (menifest.type == 'normal') {
       bot.createMessage(message.channel.id, {
-        content: callerIndicatedMessage,
+        ...substituted,
         allowedMentions: {
           users: true,
         },
@@ -89,10 +102,15 @@ const createSubstituterPipe = (
 }
 
 const substitutionPipeline: MessageCreationHandler = (bot, message) => {
-  const determinerPipes = [createDeterminerPipe(determiners.Arca), createDeterminerPipe(determiners.Instagram)]
+  const determinerPipes = [
+    createDeterminerPipe(determiners.Arca),
+    createDeterminerPipe(determiners.Instagram),
+    createDeterminerPipe(determiners.Emoji),
+  ]
   const substituterPipes = [
     createSubstituterPipe(bot, substituters.Arca),
     createSubstituterPipe(bot, substituters.Instagram),
+    createSubstituterPipe(bot, substituters.Emoji),
   ]
 
   for (let i = 0; i < determinerPipes.length; i++) {
