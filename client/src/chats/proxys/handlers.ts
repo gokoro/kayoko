@@ -1,10 +1,4 @@
-import { URL } from 'node:url'
-
-import type { MessageCreationHandler } from '../types.js'
-
 import { config } from '../../configs/index.js'
-
-const origin = 'https://arca.live'
 
 // Only filters profile routes;
 // Invalid routes will still shown as supported
@@ -36,38 +30,41 @@ function isRouteToProfile(url: string) {
   return true
 }
 
-export const ArcaHandler: MessageCreationHandler = (bot, message) => {
-  if (message.content.startsWith(origin)) {
-    const target = message.content.replace(origin, '')
-    const content = `${message.author.mention} - ${config.ARCA_PROXY_URL}${target}`
+const targets = ['Arca', 'Instagram'] as const
 
-    bot.createMessage(message.channel.id, {
-      content,
-      allowedMentions: {
-        users: true,
-      },
-    })
+type Determiner = (message: string) => boolean
+type Substituter = (message: string) => { message: string }
 
-    bot.deleteMessage(message.channel.id, message.id)
-  }
+type Determiners = {
+  [K in (typeof targets)[number]]: Determiner
 }
 
-export const InstagramHandler: MessageCreationHandler = (bot, message) => {
-  const origin = 'https://www.instagram.com'
+type Substituters = {
+  [K in (typeof targets)[number]]: Substituter
+}
 
-  if (message.content.startsWith(origin) && !message.content.includes('/share/')) {
-    if (isRouteToProfile(message.content)) return
+const determinerOfArca: Determiner = (message) => {
+  return message.includes('https://arca.live')
+}
 
-    const target = message.content.replace(origin, 'https://www.ddinstagram.com')
-    const content = `${message.author.mention} - ${target}`
+const determinerOfInstagram: Determiner = (message) => {
+  return message.includes('https://www.instagram.com') && !message.includes('/share/') && !isRouteToProfile(message)
+}
 
-    bot.createMessage(message.channel.id, {
-      content,
-      allowedMentions: {
-        users: true,
-      },
-    })
+const substituterOfArca: Substituter = (message) => {
+  return { message: message.replace('https://arca.live', config.ARCA_PROXY_URL) }
+}
 
-    bot.deleteMessage(message.channel.id, message.id)
-  }
+const substituterOfInstagram: Substituter = (message) => {
+  return { message: message.replace('instagram.com', 'ddinstagram.com') }
+}
+
+export const determiners: Determiners = {
+  Arca: determinerOfArca,
+  Instagram: determinerOfInstagram,
+}
+
+export const substituters: Substituters = {
+  Arca: substituterOfArca,
+  Instagram: substituterOfInstagram,
 }
