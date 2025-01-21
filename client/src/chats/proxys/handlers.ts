@@ -78,7 +78,8 @@ const substituterOfArca: Substituter = (message) => {
 }
 
 const substituterOfInstagram: Substituter = (message) => {
-  return { content: message.replace('instagram.com', 'ddinstagram.com') }
+  return { content: message.replace('instagram.com', 'instagram.substitution.croe.io') }
+  // return { content: message.replace('instagram.com', 'ddinstagram.com') }
 }
 
 const substituterOfEmoji: Substituter = (message) => {
