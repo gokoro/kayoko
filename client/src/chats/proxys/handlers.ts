@@ -43,7 +43,7 @@ function createEmojiCombiningUrl(ids: string[]): URL {
   return url
 }
 
-const targets = ['Arca', 'Instagram', 'Emoji'] as const
+const targets = ['Arca', 'Instagram', 'Emoji', 'Pixiv'] as const
 
 export type Determiner = (message: string) => boolean
 export type Substituter = (message: string) => Partial<AdvancedMessageContent>
@@ -71,6 +71,10 @@ const determinerOfEmoji: Determiner = (message) => {
   const matched = matchWithEmoji(message)
 
   return matched !== null && matched.length >= EMOJIS_THRESHOLD
+}
+
+const determinerOfPixiv: Determiner = (message) => {
+  return message.includes('https://www.pixiv.net')
 }
 
 const substituterOfArca: Substituter = (message) => {
@@ -117,14 +121,22 @@ const substituterOfEmoji: Substituter = (message) => {
   return { embeds: [{ image: { url: url.toString() } }] }
 }
 
+const substituterOfPixiv: Substituter = (message) => {
+  return {
+    content: message.replace('https://www.pixiv.net', 'https://www.phixiv.net'),
+  }
+}
+
 export const determiners: Determiners = {
   Arca: determinerOfArca,
   Instagram: determinerOfInstagram,
   Emoji: determinerOfEmoji,
+  Pixiv: determinerOfPixiv,
 }
 
 export const substituters: Substituters = {
   Arca: substituterOfArca,
   Instagram: substituterOfInstagram,
   Emoji: substituterOfEmoji,
+  Pixiv: substituterOfPixiv,
 }
