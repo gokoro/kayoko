@@ -4,6 +4,7 @@ import type { ClientType } from '../../libs/eris.js'
 import type { MessageCreationHandler, RegisterModule, RegisterModuleReturnedContext } from '../types.js'
 import type { Determiner, Substituter } from './handlers.js'
 
+import { webhook } from '../../bot/index.js'
 import { determiners, substituters } from './handlers.js'
 
 type PrimaryMessage = Message<PossiblyUncachedTextableChannel>
@@ -59,24 +60,31 @@ const createSubstituterPipe = (
   return (message, menifest) => {
     const substituted = substituter(message.content)
 
-    if (substituted.content) {
-      substituted.content = `${message.author.mention} - ${substituted.content}`
-    }
-
-    if (substituted.embeds) {
-      for (const embed of substituted.embeds) {
-        embed.author = {
-          name: message.author.globalName ?? message.author.username,
-          icon_url: message.author.avatarURL,
-        }
-      }
-    }
-
     if (menifest.type == 'mention') {
-      // Do Nothing for the moment
+      webhook.createMessage(bot, message.channel.id, message.author, {
+        ...substituted,
+
+        allowedMentions: {
+          users: true,
+        },
+      })
     }
 
     if (menifest.type == 'reply' && menifest.reply) {
+      // Need to implement w/ webhooks and components such as buttons to indicate an original message
+      if (substituted.content) {
+        substituted.content = `${message.author.mention} - ${substituted.content}`
+      }
+
+      if (substituted.embeds) {
+        for (const embed of substituted.embeds) {
+          embed.author = {
+            name: message.author.globalName ?? message.author.username,
+            icon_url: message.author.avatarURL,
+          }
+        }
+      }
+
       bot.createMessage(message.channel.id, {
         ...substituted,
         messageReference: {
@@ -89,8 +97,9 @@ const createSubstituterPipe = (
     }
 
     if (menifest.type == 'normal') {
-      bot.createMessage(message.channel.id, {
+      webhook.createMessage(bot, message.channel.id, message.author, {
         ...substituted,
+
         allowedMentions: {
           users: true,
         },
