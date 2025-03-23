@@ -13,7 +13,7 @@ export class ClientInstance {
 
   constructor() {
     this.client = new ClientClass(token, {
-      intents: ['guildMessages', 'guilds', 'messageContent', 'guildWebhooks'],
+      intents: ['guildMessages', 'guilds', 'messageContent', 'guildWebhooks', 'guildMembers'],
     })
   }
 

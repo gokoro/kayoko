@@ -5,6 +5,7 @@ import type { ClientType } from '../libs/eris.js'
 export const PredefinedWebhookName = 'managedByKayoko'
 
 export const WebhookIds = new Map<string, Webhook>()
+export const UserIds = new Map<string, string>()
 
 export async function createWebhook(bot: ClientType, channelId: string) {
   return await bot.createChannelWebhook(channelId, { name: PredefinedWebhookName })
@@ -23,7 +24,7 @@ export async function createMessage(bot: ClientType, channelId: string, user: Us
   }
 
   return await bot.executeWebhook(webhook.id, webhook.token, {
-    username: user.username,
+    username: UserIds.get(user.id) ?? user.username,
     avatarURL: user.avatarURL,
     ...payload,
   })

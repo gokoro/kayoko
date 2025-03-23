@@ -5,6 +5,7 @@ import type { MessageCreationHandler, RegisterModule, RegisterModuleReturnedCont
 import type { Determiner, Substituter } from './handlers.js'
 
 import { webhook } from '../../bot/index.js'
+import { UserIds } from '../../bot/webhook-user.js'
 import { determiners, substituters } from './handlers.js'
 
 type PrimaryMessage = Message<PossiblyUncachedTextableChannel>
