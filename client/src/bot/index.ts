@@ -3,6 +3,15 @@ import type { ClientType } from '../libs/eris.js'
 import { config } from '../configs/index.js'
 import { PredefinedWebhookName, UserIdsToNickname, WebhookIds, updateUserIds } from './webhook-user.js'
 
+function getDateYYYYMMDD() {
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+
+  return `${year}.${month}.${day}`
+}
+
 function handleCurrentStatus(bot: ClientType, message: string) {
   bot.editStatus([{ type: 4, state: message, name: message }])
 }
@@ -26,7 +35,7 @@ async function presetWebhooks(bot: ClientType) {
 }
 
 export function register(bot: ClientType) {
-  handleCurrentStatus(bot, `Ship@${config.APP_VERSION.substring(0, 7)}`)
+  handleCurrentStatus(bot, `${getDateYYYYMMDD()} — ${config.APP_VERSION.substring(0, 7)}`)
 
   bot.once('ready', () => {
     presetWebhooks(bot)
