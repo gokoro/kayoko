@@ -5,7 +5,7 @@ import type { MessageCreationHandler, RegisterModule, RegisterModuleReturnedCont
 import type { Determiner, Substituter } from './handlers.js'
 
 import { webhook } from '../../bot/index.js'
-import { UserIds } from '../../bot/webhook-user.js'
+import { UserIdsToNickname, updateUserIds } from '../../bot/webhook-user.js'
 import { determiners, substituters } from './handlers.js'
 
 type PrimaryMessage = Message<PossiblyUncachedTextableChannel>
@@ -111,6 +111,14 @@ const createSubstituterPipe = (
   }
 }
 
+async function presubstituter(bot: ClientType, message: Eris.Message<Eris.PossiblyUncachedTextableChannel>) {
+  const guild = bot.guilds.find((g) => g.id === message.guildID)
+
+  if (guild) {
+    await updateUserIds(guild, message.author)
+  }
+}
+
 const substitutionPipeline: MessageCreationHandler = (bot, message) => {
   const determinerPipes = [
     // createDeterminerPipe(determiners.Arca),
@@ -130,6 +138,8 @@ const substitutionPipeline: MessageCreationHandler = (bot, message) => {
     const menifest = determiner(message)
 
     if (menifest.substitution) {
+      presubstituter(bot, message)
+
       const substituer = substituterPipes[i]
 
       substituer(message, menifest)

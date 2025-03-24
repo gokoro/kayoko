@@ -1,13 +1,13 @@
 import type { ClientType } from '../libs/eris.js'
 
 import { config } from '../configs/index.js'
-import { PredefinedWebhookName, UserIds, WebhookIds } from './webhook-user.js'
+import { PredefinedWebhookName, UserIdsToNickname, WebhookIds, updateUserIds } from './webhook-user.js'
 
 function handleCurrentStatus(bot: ClientType, message: string) {
   bot.editStatus([{ type: 4, state: message, name: message }])
 }
 
-async function preRetrieveWebhookIds(bot: ClientType) {
+async function presetWebhooks(bot: ClientType) {
   for (const guildTuple of bot.guilds) {
     const [, guild] = guildTuple
     const webhooks = await guild.getWebhooks()
@@ -20,7 +20,7 @@ async function preRetrieveWebhookIds(bot: ClientType) {
     }
 
     for (const user of users) {
-      UserIds.set(user.id, user.nick ?? user.globalName ?? user.username)
+      UserIdsToNickname.set(user.id, user.nick ?? user.globalName ?? user.username)
     }
   }
 }
@@ -29,7 +29,7 @@ export function register(bot: ClientType) {
   handleCurrentStatus(bot, `Ship@${config.APP_VERSION.substring(0, 7)}`)
 
   bot.once('ready', () => {
-    preRetrieveWebhookIds(bot)
+    presetWebhooks(bot)
   })
 }
 
