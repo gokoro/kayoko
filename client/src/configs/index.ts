@@ -18,6 +18,12 @@ const envSchema = z.object({
 
   DISCORD_BOT_TOKEN: z.string().min(1),
   DISCORD_DEFAULT_GUILD_ID: z.string().optional(),
+
+  // Temporary
+  INTG_WAIFU_TARGET_GUILD: z.string().optional(),
+  INTG_WAIFU_TARGET_CHANNEL: z.string().optional(),
+  INTG_WAIFU_TARGET_USER: z.string().optional(),
+  INTG_WAIFU_ENDPOINT: z.string().optional(),
 })
 
 const parsedEnv = envSchema.parse(process.env)
@@ -33,4 +39,10 @@ export const config = {
   ARCA_PROXY_URL: parsedEnv.ARCA_PROXY_URL,
   DISCORD_BOT_TOKEN: parsedEnv.DISCORD_BOT_TOKEN,
   DISCORD_DEFAULT_GUILD_ID: parsedEnv.DISCORD_DEFAULT_GUILD_ID,
+
+  // Temporary
+  INTG_WAIFU_TARGET_GUILD: parsedEnv.INTG_WAIFU_TARGET_GUILD,
+  INTG_WAIFU_TARGET_CHANNEL: parsedEnv.INTG_WAIFU_TARGET_CHANNEL,
+  INTG_WAIFU_TARGET_USER: parsedEnv.INTG_WAIFU_TARGET_USER,
+  INTG_WAIFU_ENDPOINT: parsedEnv.INTG_WAIFU_ENDPOINT,
 }

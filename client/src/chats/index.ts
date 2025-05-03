@@ -4,6 +4,7 @@ import type { ClientType } from '../libs/eris.js'
 import type { RegisterModule, RegisterModuleReturnedContext } from './types.js'
 
 import { config } from '../configs/index.js'
+import { integrations } from './integrations/index.js'
 import { proxys } from './proxys/index.js'
 import { voices } from './voices/index.js'
 
@@ -42,8 +43,9 @@ async function handleContext(bot: ClientType, context: RegisterModuleReturnedCon
 export const register: RegisterModule = (bot) => {
   const voiceContext = voices(bot)
   const proxyContext = proxys(bot)
+  const integrationContext = integrations(bot)
 
-  const contexts = [voiceContext, proxyContext]
+  const contexts = [voiceContext, proxyContext, integrationContext]
 
   bot.once('ready', () => {
     contexts.forEach((ctx) => ctx && handleContext(bot, ctx))
