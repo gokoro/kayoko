@@ -1,5 +1,5 @@
 import Eris, { InteractionDataOptionWithValue } from 'eris'
-import got from 'got'
+import got, { ParseError } from 'got'
 
 import { config } from '../../../configs/index.js'
 import { InteractionHandler, MessageCreationHandler } from '../../types.js'
@@ -82,10 +82,14 @@ async function getXMediaEmbedData(url: string) {
     }
   }
 
-  return await got.get(replaced).json<VXTwitterAPIResponse>()
+  try {
+    return await got.get(replaced).json<VXTwitterAPIResponse>()
+  } catch (error) {
+    return null
+  }
 }
 
-const getXImageFromUrl = (url: string) => getXMediaEmbedData(url).then((d) => d.mediaURLs[0])
+const getXImageFromUrl = (url: string) => getXMediaEmbedData(url).then((d) => d?.mediaURLs[0])
 
 export const newMessagehandler: MessageCreationHandler = async (bot, message) => {
   if (!message.guildID) return
@@ -103,6 +107,8 @@ export const newMessagehandler: MessageCreationHandler = async (bot, message) =>
   if (!user) return
 
   const imageUrl = await getXImageFromUrl(embedInfo.content)
+
+  if (!imageUrl) return
 
   registerEmbedInfoToApi({
     ...embedInfo,
@@ -164,6 +170,8 @@ export const dumpCommandHandler: InteractionHandler = async (interaction) => {
     if (!user) continue
 
     const imageUrl = await getXImageFromUrl(embedInfo.content)
+
+    if (!imageUrl) continue
 
     registeredCount++
 
