@@ -3,6 +3,7 @@ import got from 'got'
 
 import { config } from '../../../configs/index.js'
 import { InteractionHandler, MessageCreationHandler } from '../../types.js'
+import { VXTwitterAPIResponse } from './types.js'
 
 type Message =
   | Eris.Message<Eris.DMChannel>
@@ -11,6 +12,7 @@ type Message =
 
 type APIPayload = {
   content: string
+  imageUrl: string
   userAvatar: string
   username: string
 }
@@ -69,7 +71,23 @@ const registerEmbedInfoToApi = (payload: APIPayload | APIPayload[]) => {
   })
 }
 
-export const newMessagehandler: MessageCreationHandler = (bot, message) => {
+async function getXMediaEmbedData(url: string) {
+  const candidates = ['vxtwitter.com', 'x.com', 'twitter.com']
+  let replaced = ''
+
+  for (const candidate of candidates) {
+    if (url.includes(candidate)) {
+      replaced = url.replace(candidate, 'api.vxtwitter.com')
+      break
+    }
+  }
+
+  return await got.get(replaced).json<VXTwitterAPIResponse>()
+}
+
+const getXImageFromUrl = (url: string) => getXMediaEmbedData(url).then((d) => d.mediaURLs[0])
+
+export const newMessagehandler: MessageCreationHandler = async (bot, message) => {
   if (!message.guildID) return
 
   const embedInfo = parseEmbedInformation(message)
@@ -84,10 +102,13 @@ export const newMessagehandler: MessageCreationHandler = (bot, message) => {
 
   if (!user) return
 
+  const imageUrl = await getXImageFromUrl(embedInfo.content)
+
   registerEmbedInfoToApi({
     ...embedInfo,
     username: user.username,
     userAvatar: user.avatar ? buildAvatarUrl(user.id, user.avatar) : user.avatarURL,
+    imageUrl,
   })
 }
 
@@ -142,12 +163,15 @@ export const dumpCommandHandler: InteractionHandler = async (interaction) => {
 
     if (!user) continue
 
+    const imageUrl = await getXImageFromUrl(embedInfo.content)
+
     registeredCount++
 
     artifacts.push({
       ...embedInfo,
       username: user.username,
       userAvatar: user.avatar ? buildAvatarUrl(user.id, user.avatar) : user.avatarURL,
+      imageUrl,
     })
   }
 
