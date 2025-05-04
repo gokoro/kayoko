@@ -121,6 +121,8 @@ export const dumpCommandHandler: InteractionHandler = async (interaction) => {
     stop = messages[messages.length - 1].id
   }
 
+  await interaction.editOriginalMessage(`${m1} - ${countLeft} items left... Done.`)
+
   let registeredCount = 0
 
   const m2 = await interaction.createFollowup('Registering info to API...')
@@ -147,6 +149,7 @@ export const dumpCommandHandler: InteractionHandler = async (interaction) => {
       userAvatar: user.avatar ? buildAvatarUrl(user.id, user.avatar) : user.avatarURL,
     })
 
-    interaction.editMessage(m2.id, `${m2.content} - ${registeredCount} items registered.`)
+    await interaction.editMessage(m2.id, `${m2.content} - Currently ${registeredCount} items...`)
   }
+  await interaction.editMessage(m2.id, `${m2.content} - Currently ${registeredCount} items... Done.`)
 }
