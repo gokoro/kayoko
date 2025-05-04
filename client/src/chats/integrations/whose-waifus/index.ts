@@ -24,7 +24,15 @@ export const handler: MessageCreationHandler = (bot, message) => {
   const isProperUser = message.author.id === userId
 
   if (isProperGuild && isProperChannel && isProperUser) {
-    const [originalUser] = message.mentions
+    const start = message.content.indexOf('<@')
+    const end = message.content.indexOf('>')
+    const originalUserId = message.content.substring(start + 2, end)
+
+    if (!message.guildID) return
+
+    const originalUser = bot.guilds.get(message.guildID)?.members.find((u) => u.id === originalUserId)
+
+    if (!originalUser) return
 
     const urlStarts = message.content.indexOf('https://')
     const payload = {
