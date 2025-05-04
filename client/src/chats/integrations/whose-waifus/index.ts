@@ -39,7 +39,7 @@ export const handler: MessageCreationHandler = (bot, message) => {
       guildId,
       channelId,
       username: originalUser.username,
-      userAvatar: originalUser.avatar ? buildAvatarUrl(originalUser.id, originalUser.avatar) : '',
+      userAvatar: originalUser.avatar ? buildAvatarUrl(originalUser.id, originalUser.avatar) : originalUser.avatarURL,
       content: message.content.substring(urlStarts),
     }
 
