@@ -59,7 +59,7 @@ const parseEmbedInformation = (message: Message) => {
 
 const getMemberByUserId = (m: Eris.Collection<Eris.Member>, id: string) => m.find((u) => u.id === id)
 
-const registerEmbedInfoToApi = (payload: APIPayload) => {
+const registerEmbedInfoToApi = (payload: APIPayload | APIPayload[]) => {
   if (!endpoint) {
     throw new Error('`INTG_WAIFU_ENDPOINT` is not set but call to API is created.')
   }
@@ -127,8 +127,9 @@ export const dumpCommandHandler: InteractionHandler = async (interaction) => {
 
   const m2 = await interaction.createFollowup('Registering info to API...')
 
-  for (let i = totalMessages.length - 1; i >= 0; i--) {
-    const message = totalMessages[i]
+  const artifacts = []
+
+  for (const message of totalMessages) {
     const embedInfo = parseEmbedInformation(message)
 
     if (embedInfo === null) continue
@@ -143,13 +144,16 @@ export const dumpCommandHandler: InteractionHandler = async (interaction) => {
 
     registeredCount++
 
-    await registerEmbedInfoToApi({
+    artifacts.push({
       ...embedInfo,
       username: user.username,
       userAvatar: user.avatar ? buildAvatarUrl(user.id, user.avatar) : user.avatarURL,
     })
-
-    await interaction.editMessage(m2.id, `${m2.content} - Currently ${registeredCount} items...`)
   }
-  await interaction.editMessage(m2.id, `${m2.content} - Currently ${registeredCount} items... Done.`)
+
+  await interaction.editMessage(m2.id, `${m2.content} - Adding ${registeredCount} items...`)
+
+  await registerEmbedInfoToApi(artifacts)
+
+  await interaction.editMessage(m2.id, `${m2.content} - Adding ${registeredCount} items... Done.`)
 }
