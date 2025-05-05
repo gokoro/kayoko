@@ -1,5 +1,6 @@
 import Eris, { InteractionDataOptionWithValue } from 'eris'
 import got, { ParseError } from 'got'
+import { createHash } from 'node:crypto'
 
 import { config } from '../../../configs/index.js'
 import { InteractionHandler, MessageCreationHandler } from '../../types.js'
@@ -22,10 +23,12 @@ const {
   INTG_WAIFU_TARGET_CHANNEL: channelId,
   INTG_WAIFU_TARGET_USER: userId,
   INTG_WAIFU_ENDPOINT: endpoint,
+  INTG_WAIFU_AUTHOR_WHITELIST: whitelist,
 } = config
 
 const buildAvatarUrl = (userId: string, avatarHash: string) =>
   `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.webp`
+const getRandomDefaultAvatarUrl = () => `https://cdn.discordapp.com/embed/avatars/${Math.round(Math.random() * 4)}.png`
 
 const isMatching = (message: Message) => {
   // If Configs not set
@@ -91,6 +94,9 @@ async function getXMediaEmbedData(url: string) {
 
 const getXImageFromUrl = (url: string) => getXMediaEmbedData(url).then((d) => d?.mediaURLs[0])
 
+const getWhitelistUsers = () => (whitelist ?? '').split(',')
+const md5 = (str: string) => createHash('md5').update(str).digest('hex')
+
 export const newMessagehandler: MessageCreationHandler = async (bot, message) => {
   if (!message.guildID) return
 
@@ -110,10 +116,20 @@ export const newMessagehandler: MessageCreationHandler = async (bot, message) =>
 
   if (!imageUrl) return
 
+  let username, userAvatar
+
+  if (getWhitelistUsers().includes(user.username)) {
+    username = user.username
+    userAvatar = user.avatar ? buildAvatarUrl(user.id, user.avatar) : user.avatarURL
+  } else {
+    username = 'Someone (' + md5(user.username).slice(0, 2) + ')'
+    userAvatar = getRandomDefaultAvatarUrl()
+  }
+
   registerEmbedInfoToApi({
     ...embedInfo,
-    username: user.username,
-    userAvatar: user.avatar ? buildAvatarUrl(user.id, user.avatar) : user.avatarURL,
+    username,
+    userAvatar,
     imageUrl,
   })
 }
@@ -175,10 +191,20 @@ export const dumpCommandHandler: InteractionHandler = async (interaction) => {
 
     registeredCount++
 
+    let username, userAvatar
+
+    if (getWhitelistUsers().includes(user.username)) {
+      username = user.username
+      userAvatar = user.avatar ? buildAvatarUrl(user.id, user.avatar) : user.avatarURL
+    } else {
+      username = 'Someone (' + md5(user.username).slice(0, 2) + ')'
+      userAvatar = getRandomDefaultAvatarUrl()
+    }
+
     artifacts.push({
       ...embedInfo,
-      username: user.username,
-      userAvatar: user.avatar ? buildAvatarUrl(user.id, user.avatar) : user.avatarURL,
+      username,
+      userAvatar,
       imageUrl,
     })
   }

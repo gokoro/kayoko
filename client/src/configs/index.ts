@@ -24,6 +24,7 @@ const envSchema = z.object({
   INTG_WAIFU_TARGET_CHANNEL: z.string().optional(),
   INTG_WAIFU_TARGET_USER: z.string().optional(),
   INTG_WAIFU_ENDPOINT: z.string().optional(),
+  INTG_WAIFU_AUTHOR_WHITELIST: z.string().optional(),
 })
 
 const parsedEnv = envSchema.parse(process.env)
@@ -45,4 +46,5 @@ export const config = {
   INTG_WAIFU_TARGET_CHANNEL: parsedEnv.INTG_WAIFU_TARGET_CHANNEL,
   INTG_WAIFU_TARGET_USER: parsedEnv.INTG_WAIFU_TARGET_USER,
   INTG_WAIFU_ENDPOINT: parsedEnv.INTG_WAIFU_ENDPOINT,
+  INTG_WAIFU_AUTHOR_WHITELIST: parsedEnv.INTG_WAIFU_AUTHOR_WHITELIST,
 }
