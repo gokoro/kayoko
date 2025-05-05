@@ -211,7 +211,7 @@ export const dumpCommandHandler: InteractionHandler = async (interaction) => {
 
   await interaction.editMessage(m2.id, `${m2.content} - Adding ${registeredCount} items...`)
 
-  await registerEmbedInfoToApi(artifacts.toReversed())
+  await registerEmbedInfoToApi(artifacts.reverse())
 
   await interaction.editMessage(m2.id, `${m2.content} - Adding ${registeredCount} items... Done.`)
 }
