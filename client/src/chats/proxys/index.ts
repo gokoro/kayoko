@@ -125,12 +125,14 @@ const substitutionPipeline: MessageCreationHandler = (bot, message) => {
     createDeterminerPipe(determiners.Instagram),
     createDeterminerPipe(determiners.Emoji),
     createDeterminerPipe(determiners.Pixiv),
+    createDeterminerPipe(determiners.X),
   ]
   const substituterPipes = [
     createSubstituterPipe(bot, substituters.Arca),
     createSubstituterPipe(bot, substituters.Instagram),
     createSubstituterPipe(bot, substituters.Emoji),
     createSubstituterPipe(bot, substituters.Pixiv),
+    createSubstituterPipe(bot, substituters.X),
   ]
 
   for (let i = 0; i < determinerPipes.length; i++) {

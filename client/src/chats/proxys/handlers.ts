@@ -43,7 +43,7 @@ function createEmojiCombiningUrl(ids: string[]): URL {
   return url
 }
 
-const targets = ['Arca', 'Instagram', 'Emoji', 'Pixiv'] as const
+const targets = ['Arca', 'Instagram', 'Emoji', 'Pixiv', 'X'] as const
 
 export type Determiner = (message: string) => boolean
 export type Substituter = (message: string) => Partial<AdvancedMessageContent>
@@ -67,7 +67,7 @@ const determinerOfInstagram: Determiner = (message) => {
 }
 
 const determinerOfEmoji: Determiner = (message) => {
-  const EMOJIS_THRESHOLD = 2
+  const EMOJIS_THRESHOLD = 1
   const matched = matchWithEmoji(message)
 
   return matched !== null && matched.length >= EMOJIS_THRESHOLD
@@ -75,6 +75,10 @@ const determinerOfEmoji: Determiner = (message) => {
 
 const determinerOfPixiv: Determiner = (message) => {
   return message.includes('https://www.pixiv.net')
+}
+
+const determinerOfX: Determiner = (message) => {
+  return message.includes('https://x.com')
 }
 
 const substituterOfArca: Substituter = (message) => {
@@ -127,11 +131,18 @@ const substituterOfPixiv: Substituter = (message) => {
   }
 }
 
+const substituterOfX: Substituter = (message) => {
+  return {
+    content: message.replace('https://x.com', 'https://vxtwitter.com'),
+  }
+}
+
 export const determiners: Determiners = {
   Arca: determinerOfArca,
   Instagram: determinerOfInstagram,
   Emoji: determinerOfEmoji,
   Pixiv: determinerOfPixiv,
+  X: determinerOfX,
 }
 
 export const substituters: Substituters = {
@@ -139,4 +150,5 @@ export const substituters: Substituters = {
   Instagram: substituterOfInstagram,
   Emoji: substituterOfEmoji,
   Pixiv: substituterOfPixiv,
+  X: substituterOfX,
 }
